@@ -12,8 +12,7 @@ const authSlice = createSlice({
         setLogin: (state, action) => {
             const foundUser = action.payload.foundUser
             state.user = { ...foundUser }
-            localStorage.setItem("firstLogin", true)
-            console.log(state.user);
+            // console.log(state.user);
         },
         setCredentials: (state, action) => {
             const { accessToken } = action.payload

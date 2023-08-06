@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../redux/actions/authAction'
 import { useDispatch } from 'react-redux'
 import { setCredentials, setLogin } from '../redux/reducers/authReducer'
-import { setLoading, setError } from '../redux/reducers/notifyReducer'
+import { setLoading, setError, setSuccess } from '../redux/reducers/notifyReducer'
+
+import { toast } from 'react-toastify';
+
+import Loading from '../components/alert/Loading'
 
 const initialState = {
     email: "",
@@ -16,7 +20,9 @@ const Login = () => {
 
     const [typePass, setTypePass] = useState(false)
 
+
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [login, { isLoading }] = useLoginMutation()
 
@@ -25,21 +31,25 @@ const Login = () => {
         setUserData({ ...userData, [name]: value })
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(userData);
         try {
             const { accessToken, foundUser } = await login({ email, password }).unwrap()
             dispatch(setCredentials({ accessToken }))
             dispatch(setLogin({ foundUser }))
             dispatch(setLoading({ loading: isLoading }))
+            dispatch(setSuccess("Login Success"))
+            toast.success("Login success")
         } catch (err) {
             dispatch(setError(err.data.message))
+            toast.error(err.data.message)
         }
     }
 
     return (
         <>
+            {isLoading && <Loading />}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
 

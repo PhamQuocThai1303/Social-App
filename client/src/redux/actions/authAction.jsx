@@ -1,5 +1,6 @@
 import { apiSlice } from "../api/apiSlice"
-import { logOut, setCredentials } from "../reducers/authReducer"
+import { logOut, setCredentials, setLogin } from "../reducers/authReducer"
+import { setError, setSuccess } from "../reducers/notifyReducer"
 
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -38,11 +39,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    console.log(data)
-                    const { accessToken } = data
+                    const { accessToken, foundUser } = data
+                    dispatch(setLogin({ foundUser }))
                     dispatch(setCredentials({ accessToken }))
+                    dispatch(setSuccess("refresh success"))
                 } catch (err) {
-                    console.log(err)
+                    dispatch(setError(err.error.message))
+
                 }
             }
         }),

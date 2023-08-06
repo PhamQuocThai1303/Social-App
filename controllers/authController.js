@@ -45,7 +45,7 @@ const login = async (req, res) => {
     const foundUser = await User.findOne({ email }).exec()
 
     if (!foundUser) {
-        return res.status(401).json({ message: 'Unauthorized' })
+        return res.status(401).json({ message: 'Invalid user' })
     }
 
     const match = await bcrypt.compare(password, foundUser.password)
@@ -110,7 +110,7 @@ const refresh = async (req, res) => {
                 { expiresIn: '15m' }
             )
 
-            res.json({ accessToken })
+            res.json({ accessToken, foundUser })
         }
     )
 }
