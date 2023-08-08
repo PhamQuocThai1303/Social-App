@@ -5,6 +5,14 @@ import { setError, setSuccess } from "../reducers/notifyReducer"
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
+        register: builder.mutation({
+            query: credentials => ({
+                url: '/auth/register',
+                method: 'POST',
+                body: { ...credentials }
+            }),
+        }),
+
         login: builder.mutation({
             query: credentials => ({
                 url: '/auth/login',
@@ -56,4 +64,5 @@ export const {
     useLoginMutation,
     useSendLogoutMutation,
     useRefreshMutation,
+    useRegisterMutation,
 } = authApiSlice 

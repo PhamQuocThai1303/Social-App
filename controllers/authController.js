@@ -2,16 +2,29 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const emailRegex = /^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,6}$/;
+
 // @desc Register
 // @route POST /register
 // @access Public
 const register = async (req, res) => {
-    const { fullname, username, email, password, gender } = req.body
+    const { fullname, username, email, password, cf_password, gender } = req.body
     let newUserName = username.toLowerCase().replace(/ /g, '') // transfer to lowercase and delete white space
 
     if (!username || !password || !fullname || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
+
+    if (fullname && fullname.length > 25) return res.status(400).json({ message: 'Max characters of fullname are 25' })
+
+    if (username && username.replace(/ /g, '').length > 25) return res.status(400).json({ message: 'Max characters of username are 25' })
+
+    if (!emailRegex.test(email)) return res.status(400).json({ message: 'Email is not valid' })
+
+    if (password && password.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters.' })
+
+    if (password !== cf_password) return res.status(400).json({ message: 'Confirm password is not correct.' })
+
     //check username exist
     const foundUserName = await User.findOne({ username: newUserName })
     if (foundUserName) return res.status(400).json({ message: "This user name already exists." })
@@ -60,13 +73,13 @@ const login = async (req, res) => {
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' }
+        { expiresIn: '5m' }
     )
 
     const refreshToken = jwt.sign(
         { "username": foundUser.username },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '3d' }
     )
 
     // Create secure cookie with refresh token 
@@ -107,7 +120,7 @@ const refresh = async (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: '15m' }
+                { expiresIn: '5m' }
             )
 
             res.json({ accessToken, foundUser })
