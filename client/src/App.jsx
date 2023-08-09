@@ -8,6 +8,8 @@ import Login from './pages/login'
 import Home from './pages/home'
 import Profile from './pages/profile'
 import Post from './pages/post'
+import Header from './components/header/Header'
+
 
 import Alert from './components/alert/Alert'
 
@@ -35,7 +37,7 @@ function App() {
 
   return (
     <div>
-
+      {token && <Header />}
       <Alert />
 
       <Routes>

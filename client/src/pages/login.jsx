@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../redux/actions/authAction'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setCredentials, setLogin } from '../redux/reducers/authReducer'
 import { setLoading, setError, setSuccess } from '../redux/reducers/notifyReducer'
 
