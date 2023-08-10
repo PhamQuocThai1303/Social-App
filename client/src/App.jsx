@@ -9,6 +9,7 @@ import Home from './pages/home'
 import Profile from './pages/profile'
 import Post from './pages/post'
 import Header from './components/header/Header'
+import NotFound from './pages/notFound'
 
 
 import Alert from './components/alert/Alert'
@@ -54,7 +55,7 @@ function App() {
           // element={isAuth ? <Post /> : <Navigate to="/" />}
           element={<Post />}
         />
-
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )

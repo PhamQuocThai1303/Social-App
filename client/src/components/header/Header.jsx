@@ -1,19 +1,52 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { useLogoutMutation } from '../../redux/actions/authAction'
+
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { TfiAlignJustify, TfiClose, TfiBell } from "react-icons/tfi";
+import { logOut } from '../../redux/reducers/authReducer'
+import { setSuccess, setError } from '../../redux/reducers/notifyReducer'
+import { toast } from 'react-toastify';
+
+import Avatar from '../Avatar'
 
 const Header = () => {
     const navigation = [
-        { name: 'Home', current: true, path: "/" },
-        { name: 'Discover', current: false, path: "/discover" },
-        { name: 'Message', current: false, path: "message" },
+        { name: 'Home', path: "/" },
+        { name: 'Discover', path: "/discover" },
+        { name: 'Message', path: "/message" },
     ]
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
+
+    const { user, token } = useSelector((state) => state.auth)
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
+    const [logout, { isLoading }] = useLogoutMutation()
+
+    const isCurrent = (pn) => {
+        if (pn === pathname) return true
+    }
+
+    const handleLogout = async () => {
+        try {
+            await logout().unwrap()
+            dispatch(logOut())
+            dispatch(setSuccess("Logout Success"))
+            toast.success("Logout success")
+            navigate("/")
+        } catch (err) {
+            dispatch(setError(err.data.message))
+            toast.error(err.data.message)
+        }
+    }
+
     return (
         <>
             <Disclosure as="nav" className="bg-gray-800">
@@ -48,10 +81,10 @@ const Header = () => {
                                                     key={item.name}
                                                     to={item.path}
                                                     className={classNames(
-                                                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                        isCurrent(item.path) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                         'rounded-md px-3 py-2 text-sm font-medium'
                                                     )}
-                                                    aria-current={item.current ? 'page' : undefined}
+                                                    aria-current={isCurrent(item.path) ? 'page' : undefined}
                                                 >
                                                     {item.name}
                                                 </Link>
@@ -75,10 +108,8 @@ const Header = () => {
                                             <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                 <span className="absolute -inset-1.5" />
                                                 <span className="sr-only">Open user menu</span>
-                                                <img
-                                                    className="h-8 w-8 rounded-full"
-                                                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                    alt=""
+                                                <Avatar
+                                                    avatar={user.avatar}
                                                 />
                                             </Menu.Button>
                                         </div>
@@ -94,12 +125,13 @@ const Header = () => {
                                             <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                 <Menu.Item>
                                                     {({ active }) => (
-                                                        <a
+                                                        <Link
+                                                            to={`/profile/${user._id}`}
                                                             href="#"
                                                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                         >
                                                             Your Profile
-                                                        </a>
+                                                        </Link>
                                                     )}
                                                 </Menu.Item>
                                                 <Menu.Item>
@@ -117,6 +149,7 @@ const Header = () => {
                                                         <a
                                                             href="#"
                                                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                            onClick={handleLogout}
                                                         >
                                                             Sign out
                                                         </a>
