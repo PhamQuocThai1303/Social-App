@@ -28,6 +28,8 @@ app.use('/', require('./routes/root')) //root
 
 app.use('/auth', require('./routes/authRoutes'))
 
+app.use('/search', require('./routes/userRoutes'))
+
 //Routes
 
 app.all('*', (req, res) => { //cath-all middleware that go wrong path
