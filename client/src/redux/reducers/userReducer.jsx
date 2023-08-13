@@ -1,22 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    searchUser: {},
+    users: [],
+    posts: []
 }
 
 const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        searchUser: (state, action) => {
+        getUser: (state, action) => {
             const foundUsers = action.payload.foundUser
-            state.searchUser = { ...foundUsers }
+            state.users = [...state.users, foundUsers]
             // console.log(state.user);
         },
-
     }
 })
 
-export const { searchUser } = userSlice.actions
+export const { getUser } = userSlice.actions
 
 export default userSlice.reducer

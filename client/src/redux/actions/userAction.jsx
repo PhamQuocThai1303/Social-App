@@ -1,6 +1,4 @@
 import { apiSlice } from "../api/apiSlice"
-import { searchUser } from "../reducers/userReducer"
-
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -11,9 +9,16 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 body: { ...credentials }
             }),
         }),
+        getUser: builder.query({
+            query: (args) => ({
+                url: `/profile/${args.id}`,
+                method: 'GET',
+            }),
+        }),
     })
 })
 
 export const {
     useSearchUserMutation,
+    useGetUserQuery,
 } = userApiSlice 

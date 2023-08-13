@@ -6,10 +6,14 @@ const verifyJWT = require('../middleware/verifyJWT')
 router.use(verifyJWT)
 
 const {
-    searchUser
+    searchUser,
+    getUser
 } = userController
 
-router.route('/')
+router.route('/search')
     .post(searchUser)
+
+router.route('/profile/:id')
+    .get(getUser)
 
 module.exports = router

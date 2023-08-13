@@ -28,7 +28,9 @@ app.use('/', require('./routes/root')) //root
 
 app.use('/auth', require('./routes/authRoutes'))
 
-app.use('/search', require('./routes/userRoutes'))
+app.use('/', require('./routes/userRoutes'))
+
+
 
 //Routes
 
