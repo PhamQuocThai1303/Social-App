@@ -2,34 +2,50 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useSearchUserMutation } from '../../redux/actions/userAction'
 import { setError } from '../../redux/reducers/notifyReducer'
+import { Link } from 'react-router-dom'
+import UserCard from '../UserCard'
 
 const SearchBar = () => {
     const [search, setSearch] = useState("")
     const [users, setUsers] = useState([])
+    const [tempSearch, setTempSearch] = useState("")
 
     const [searchUser, { isLoading }] = useSearchUserMutation()
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (search) {
-            searchUser({ "username": `${search}` })
-                .then((res) => setUsers(res.data.users))
-                .catch(err => {
-                    dispatch(setError(err.data.message))
-                })
+        if (search !== tempSearch) {
+            if (search === "") setUsers([])
+
+            else {
+                searchUser({ "username": `${search}` })
+                    .then((res) => setUsers(res.data.users))
+                    .catch(err => {
+                        dispatch(setError(err.data.message))
+                    })
+            }
+            setTempSearch(search)
         }
-    }, [search])
+    }, [search, users])
 
     const handleChangeInput = (e) => {
         e.preventDefault()
         const { value } = e.target
-        setSearch(value.toLowerCase().replace(/ /g, ''))
-        // console.log(search)
+
+        if (e.key === 'Backspace' || value === search) {
+            setSearch(value);
+        }
+        else if (value === "") {
+            setSearch("")
+        }
+        else {
+            setSearch(value.toLowerCase().replace(/ /g, ''))
+        }
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+
+    const handleSubmit = () => {
         setUsers([])
         setSearch("")
     }
@@ -45,9 +61,23 @@ const SearchBar = () => {
                     </svg>
                 </div>
                 <input type="search" id="default-search" className="block sm:w-full w-[200%] p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for friends"
-                    onChange={handleChangeInput}
+                    onInput={handleChangeInput}
                     value={search}
                 />
+                <div className='block w-[200%] sm:w-[35%] flex flex-col mt-2 fixed'>
+                    {
+                        users?.map(user => (
+                            <Link
+                                key={user._id}
+                                to={`/profile/${user._id}`}
+                                className=''
+                                onClick={handleSubmit}
+                            >
+                                <UserCard user={user} />
+                            </Link>
+                        ))
+                    }
+                </div>
 
             </div>
         </form>

@@ -199,7 +199,7 @@ const Header = () => {
                             </div>
                         </div>
 
-                        <Disclosure.Panel className="sm:hidden">
+                        <Disclosure.Panel className="sm:hidden fixed bg-gray-800 w-full">
                             <div className="space-y-1 px-2 pb-3 pt-2">
                                 {navigation.map((item) => (
                                     <div
