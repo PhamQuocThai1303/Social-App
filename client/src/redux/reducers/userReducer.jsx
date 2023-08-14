@@ -11,8 +11,10 @@ const userSlice = createSlice({
     reducers: {
         getUser: (state, action) => {
             const foundUsers = action.payload.foundUser
-            state.users = [...state.users, foundUsers]
-            // console.log(state.user);
+            return {
+                ...state,
+                users: [...state.users, foundUsers]
+            };
         },
     }
 })

@@ -5,24 +5,27 @@ import { useGetUserQuery } from '../../redux/actions/userAction'
 
 import Info from '../../components/profile/Info'
 import Posts from '../../components/profile/Posts'
+import Loading from '../../components/alert/Loading'
 
 const Profile = () => {
     const userId = useParams().userId
     const { users } = useSelector((state) => state.user)
     const { user } = useSelector((state) => state.auth)
-    const { data: foundUser, isLoading, isError, error } = useGetUserQuery({ id: userId });
-
-    const [userData, setUserData] = useState()
+    const { data: foundUser, isLoading, isError, error } = useGetUserQuery({ id: userId })
 
     const dispatch = useDispatch()
 
     useEffect(() => {
 
-    }, [userId])
+    }, [userId, user, users])
+
 
     return (
         <div>
-            <Info id={userId} />
+            {!users
+                ? <Loading />
+                : <Info id={userId} profile={users} auth={user} />
+            }
             <Posts />
         </div>
     )
