@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import Loading from '../alert/Loading'
+import EditProfile from './EditProfile'
 
 const Info = ({ id, profile, auth }) => {
     const [userData, setUserData] = useState({})
+    const [isProfile, setIsProfile] = useState()
+    const [isEdit, setIsEdit] = useState(false)
 
     useEffect(() => {
         if (id === auth._id) {
             setUserData(auth)
+            setIsProfile(true)
         }
         else {
             const newUser = profile?.filter((user) => user._id == id)
             setUserData(newUser[0])
+            setIsProfile(false)
         }
     }, [id, profile, auth])
 
@@ -48,17 +53,27 @@ const Info = ({ id, profile, auth }) => {
                         </div>
 
                         <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-                            <button
-                                className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                            >
-                                Edit Profile
-                            </button>
+                            {isProfile
+                                ? <button
+                                    className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                                    onClick={() => setIsEdit(!isEdit)}
+                                >
+                                    Edit Profile
+                                </button>
 
-                            <button
-                                className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                            >
-                                Message
-                            </button>
+                                : <button
+                                    className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                                >
+                                    Follow
+                                </button>
+                            }
+                            {!isProfile
+                                && <button
+                                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                                >
+                                    Message
+                                </button>
+                            }
                         </div>
                     </div>
 
@@ -77,6 +92,10 @@ const Info = ({ id, profile, auth }) => {
 
                 </div>
             </div>
+
+            {
+                isEdit && <EditProfile user={userData} setIsEdit={setIsEdit} />
+            }
 
         </>
     )
