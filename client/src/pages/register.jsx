@@ -7,7 +7,6 @@ import { setLoading, setError, setSuccess } from '../redux/reducers/notifyReduce
 import { toast } from 'react-toastify';
 import Loading from '../components/alert/Loading'
 
-
 const initialState = {
     fullname: "",
     username: "",
@@ -71,9 +70,10 @@ const Register = () => {
                         Register an account
                     </h2>
                 </div>
-                {/* FUllname */}
+
                 <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" action="#" method="POST">
+                        {/* FUllname */}
                         <div>
                             <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
                                 Fullname

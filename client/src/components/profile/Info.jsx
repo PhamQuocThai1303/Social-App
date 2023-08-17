@@ -94,7 +94,7 @@ const Info = ({ id, profile, auth }) => {
             </div>
 
             {
-                isEdit && <EditProfile user={userData} setIsEdit={setIsEdit} />
+                isEdit && <EditProfile user={userData} setIsEdit={setIsEdit} userAva={userData?.avatar} />
             }
 
         </>
