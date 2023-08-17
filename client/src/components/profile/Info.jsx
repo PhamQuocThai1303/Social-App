@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Loading from '../alert/Loading'
 import EditProfile from './EditProfile'
+import FollowBtn from '../FollowBtn'
 
 const Info = ({ id, profile, auth }) => {
     const [userData, setUserData] = useState({})
@@ -52,7 +53,7 @@ const Info = ({ id, profile, auth }) => {
                             </div>
                         </div>
 
-                        <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
+                        <div className="space-x-8 flex justify-center mt-32 md:mt-0 md:justify-center">
                             {isProfile
                                 ? <button
                                     className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
@@ -61,11 +62,7 @@ const Info = ({ id, profile, auth }) => {
                                     Edit Profile
                                 </button>
 
-                                : <button
-                                    className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                                >
-                                    Follow
-                                </button>
+                                : <FollowBtn />
                             }
                             {!isProfile
                                 && <button

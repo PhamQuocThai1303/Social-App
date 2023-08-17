@@ -2,7 +2,6 @@ import { apiSlice } from "../api/apiSlice"
 import { logOut, setCredentials, setLogin } from "../reducers/authReducer"
 import { setError, setSuccess } from "../reducers/notifyReducer"
 
-
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         register: builder.mutation({
@@ -27,7 +26,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    const { data } = await queryFulfilled
                     dispatch(logOut())
                     setTimeout(() => {
                         dispatch(apiSlice.util.resetApiState())

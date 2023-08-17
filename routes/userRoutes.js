@@ -7,7 +7,8 @@ const verifyJWT = require('../middleware/verifyJWT')
 
 const {
     searchUser,
-    getUser
+    getUser,
+    updateUser
 } = userController
 
 router.route('/search')
@@ -15,5 +16,6 @@ router.route('/search')
 
 router.route('/profile/:id')
     .get(getUser)
+    .post(updateUser)
 
 module.exports = router

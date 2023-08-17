@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { checkImage, imageUpload } from '../../utils/uploadImage'
+import { useUpdateUserMutation } from '../../redux/actions/userAction';
+import Loading from '../alert/Loading';
+
+import { toast } from 'react-toastify';
 
 
 const initialState = {
@@ -8,15 +13,23 @@ const initialState = {
     address: '',
     website: '',
     story: '',
-    gender: ''
+    gender: 'male'
 }
 
 const EditProfile = ({ user, setIsEdit, userAva }) => {
+    const id = user._id
+
+    //   const { user, token } = useSelector((state) => state.auth)
 
     const [userData, setUserData] = useState(initialState)
     const { fullname, mobile, address, website, story, gender } = userData
+    const [updateUser, { isLoading }] = useUpdateUserMutation()
 
     const [avatar, setAvatar] = useState('')
+
+    useEffect(() => {
+        setUserData(user)
+    }, [user])
 
     const handleChangeGender = (e) => {
         const { value } = e.target
@@ -28,13 +41,31 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
         setUserData({ ...userData, [name]: value })
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        //return img url tren cloudinary o imageUpload r moi updateUser
+        try {
+            let media;
+            if (avatar) {
+                media = await imageUpload([avatar])
+            }
+
+            await updateUser({ id, fullname, mobile, address, website, story, gender, avatar: avatar ? `${media[0].url}` : user?.avatar }).unwrap()
+            setIsEdit(false)
+            window.location.reload() //reload web
+        } catch (error) {
+            toast.error(error.data.message)
+        }
+    }
+
     const changeAvatar = (e) => {
         const file = e.target.files[0]
 
-        // const err = checkImage(file)
-
+        const err = checkImage(file)
+        if (err) toast.error(err)
         setAvatar(file)
     }
+    if (isLoading) return <Loading />
 
     return (
         <div className="max-w-2xl mx-auto">
@@ -53,11 +84,11 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
                         </div>
                         {/* Modal body */}
                         <div className='mx-2 my-4'>
-                            <form>
+                            <form >
                                 <div className='flex flex-col items-center justify-center'>
                                     <img src={avatar ? URL.createObjectURL(avatar) : userAva}
                                         alt="avatar"
-                                        className='h-20 w-20'
+                                        className='h-20 w-20 rounded-full'
                                     />
 
                                     <div className="flex w-full items-center justify-center bg-grey-lighter">
@@ -65,7 +96,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
                                             <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                 <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                                             </svg>
-                                            <span className="pl-2 text-base leading-normal ">Select a file</span>
+                                            <span className="pl-2 text-base leading-normal ">Select image</span>
                                             <input type='file' className="hidden" onChange={changeAvatar} />
                                         </label>
                                     </div>
@@ -80,16 +111,20 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
                                             id="fullname"
                                             name="fullname"
                                             type="text"
+                                            required
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             onChange={handleChangeInput}
                                             value={fullname}
                                         />
+                                        <small >
+                                            {fullname.length}/25
+                                        </small>
                                     </div>
                                 </div>
 
                                 {/* Mobile */}
                                 <div>
-                                    <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900">
                                         Mobile
                                     </label>
                                     <div className="mt-2">
@@ -106,7 +141,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
 
                                 {/* Address */}
                                 <div>
-                                    <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900">
                                         Address
                                     </label>
                                     <div className="mt-2">
@@ -123,7 +158,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
 
                                 {/* Website */}
                                 <div>
-                                    <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="website" className="block text-sm font-medium leading-6 text-gray-900">
                                         Website
                                     </label>
                                     <div className="mt-2">
@@ -140,14 +175,14 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
 
                                 {/* Story */}
                                 <div>
-                                    <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
+                                    <label htmlFor="story" className="block text-sm font-medium leading-6 text-gray-900">
                                         Story
                                     </label>
                                     <div className="mt-2">
                                         <textarea
                                             id="story"
                                             name="story"
-                                            cols="30" rows="4"
+                                            cols="30" rows="3"
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             onChange={handleChangeInput}
                                             value={story}
@@ -167,7 +202,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
                                     </select>
                                 </div>
                                 {/* footer */}
-                                <button data-modal-toggle="default-modal" className="ml-60 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit">
+                                <button data-modal-toggle="default-modal" className="ml-60 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit" onClick={(e) => handleSubmit(e)}>
                                     SAVE
                                 </button>
                                 <button data-modal-toggle="default-modal" type="button" className="ml-2 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600" onClick={() => setIsEdit(false)}>

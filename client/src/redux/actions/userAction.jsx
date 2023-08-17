@@ -1,6 +1,8 @@
 import { apiSlice } from "../api/apiSlice"
 import { getUser } from "../reducers/userReducer"
 import { setError } from "../reducers/notifyReducer"
+import { imageUpload } from "../../utils/uploadImage"
+import { setLogin } from "../reducers/authReducer"
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -28,10 +30,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
-    })
+        updateUser: builder.mutation({
+            query: args => ({
+                url: `/profile/${args.id}`,
+                method: 'POST',
+                body: { ...args }
+            }),
+
+        }),
+    }),
+
 })
 
 export const {
     useSearchUserMutation,
     useGetUserQuery,
+    useUpdateUserMutation,
 } = userApiSlice 
