@@ -21,10 +21,27 @@ const authSlice = createSlice({
         logOut: (state, action) => {
             state.token = null
         },
+        followingUser: (state, action) => {
+            const { user, authUser } = action.payload
+
+            const newUser = { ...authUser, following: [...authUser.following, user] }
+            return {
+                ...state,
+                user: newUser
+            }
+        },
+        unFollowingUser: (state, action) => {
+            const { user, authUser } = action.payload
+            const newUser = { ...authUser, following: authUser.following.filter(item => item._id !== user._id) }
+            return {
+                ...state,
+                user: newUser
+            }
+        }
     }
 })
 
-export const { setCredentials, logOut, setLogin } = authSlice.actions
+export const { setCredentials, logOut, setLogin, followingUser, unFollowingUser } = authSlice.actions
 
 export default authSlice.reducer
 

@@ -62,7 +62,7 @@ const Info = ({ id, profile, auth }) => {
                                     Edit Profile
                                 </button>
 
-                                : <FollowBtn />
+                                : <FollowBtn user={userData} />
                             }
                             {!isProfile
                                 && <button
