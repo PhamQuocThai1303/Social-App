@@ -1,31 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { followUser, unFollowUser } from '../redux/reducers/userReducer';
-import { followingUser, unFollowingUser } from '../redux/reducers/authReducer';
+import { useFollowMutation, useUnfollowMutation } from '../redux/actions/userAction';
 
 const FollowBtn = ({ user }) => {
-    const [followed, setFollowed] = useState(false)
+    const [followed, setFollowed] = useState()
     const { user: authUser, token } = useSelector((state) => state.auth)
+
+    const id = user._id
+
+    const [follow] = useFollowMutation()
+    const [unfollow] = useUnfollowMutation()
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (authUser?.following?.find(item => item._id === user._id)) {
+        if (authUser?.following?.find(item => item == user._id)) {
             setFollowed(true)
         }
-    }, [])
+        else {
+            setFollowed(false)
+        }
+    }, [user._id])
 
-    const handleFollow = () => {
+    const handleFollow = async () => {
+
         setFollowed(true)
-        dispatch(followUser({ user, authUser })) //update followers cua profile (khac authUser)
-        dispatch(followingUser({ user, authUser }))// update following cua authUser
+        await follow({ id, user, authUser })
+
     }
 
-    const handleUnFollow = () => {
+    const handleUnFollow = async () => {
+
         setFollowed(false)
-        dispatch(unFollowUser({ user, authUser }))
-        dispatch(unFollowingUser({ user, authUser }))
+        await unfollow({ id, user, authUser })
+
     }
+
 
     return (
         <>

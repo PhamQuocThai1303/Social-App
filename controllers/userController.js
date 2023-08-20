@@ -51,10 +51,63 @@ const updateUser = async (req, res) => {
 
 }
 
+// @desc followUser
+// @route PATCH /user/:id/follow
+// @access Public
+const follow = async (req, res) => {
+    const { id, user, authUser } = req.body
+    const userId = user?._id
+    const authUserId = authUser?._id
+    // console.log(user, authUser);
+    try {
+        const foundUser = await User.find({ _id: userId, followers: authUserId })
+        if (foundUser.length > 0) return res.status(500).json({ message: "You followed this user." })
+
+        const newUser = await User.findOneAndUpdate({ _id: userId }, {
+            $push: { followers: authUserId }
+        }, { new: true }).populate("followers following", "-password") //new: true de tra ve ban sao moi cua user da tim thay
+
+        await User.findOneAndUpdate({ _id: authUserId }, {
+            $push: { following: userId }
+        }, { new: true })
+
+        res.json({ newUser })
+
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+// @desc unfollowUser
+// @route PATCH /user/:id/unfollow
+// @access Public
+const unfollow = async (req, res) => {
+    const { id, user, authUser } = req.body
+    const userId = user?._id
+    const authUserId = authUser?._id
+
+    try {
+        const newUser = await User.findOneAndUpdate({ _id: userId }, {
+            $pull: { followers: authUserId }
+        }, { new: true }).populate("followers following", "-password")
+
+        await User.findOneAndUpdate({ _id: authUserId }, {
+            $pull: { following: userId }
+        }, { new: true })
+
+        res.json({ newUser })
+
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
 
 
 module.exports = {
     searchUser,
     getUser,
     updateUser,
+    follow,
+    unfollow,
 }

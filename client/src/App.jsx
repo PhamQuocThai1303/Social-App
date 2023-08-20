@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { useRefreshMutation } from './redux/actions/authAction'
+import { Navigate } from 'react-router-dom'
 
 import Register from './pages/register'
 import Login from './pages/login'
@@ -38,6 +39,7 @@ function App() {
     }
   }, [])
 
+
   return (
     <>
       {token && <Header />}
@@ -53,7 +55,6 @@ function App() {
           <Route path='/discover' element={<Discover />} />
           <Route
             path="/profile/:userId"
-            // element={isAuth ? <Profile /> : <Navigate to="/" />}
             element={<Profile />}
           />
           <Route
