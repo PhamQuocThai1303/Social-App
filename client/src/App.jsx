@@ -13,6 +13,7 @@ import NotFound from './pages/notFound'
 import Message from './pages/message/message'
 import Discover from './pages/discover'
 import Profile from './pages/profile/[id]'
+import StatusModal from './components/StatusModal'
 
 import PrivateRouter from './redux/actions/PrivateRouter'
 import Alert from './components/alert/Alert'
@@ -20,6 +21,7 @@ import Alert from './components/alert/Alert'
 function App() {
 
   const { user, token } = useSelector((state) => state.auth)
+  const { status } = useSelector((state) => state.status)
   const dispatch = useDispatch()
   const [refresh] = useRefreshMutation()
   const firstLogin = localStorage.getItem("firstLogin")
@@ -43,6 +45,7 @@ function App() {
   return (
     <>
       {token && <Header />}
+      {status && <StatusModal />}
       <Alert />
 
       <Routes>

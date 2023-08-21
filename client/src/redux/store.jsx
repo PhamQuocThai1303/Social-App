@@ -4,6 +4,7 @@ import { setupListeners } from "@reduxjs/toolkit/dist/query"; // được sử d
 import authReducer from "./reducers/authReducer";
 import notifyReducer from "./reducers/notifyReducer";
 import userReducer from "./reducers/userReducer";
+import statusReducer from "./reducers/statusReducer";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         auth: authReducer,
         notify: notifyReducer,
         user: userReducer,
+        status: statusReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true
