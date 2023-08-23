@@ -5,6 +5,7 @@ import authReducer from "./reducers/authReducer";
 import notifyReducer from "./reducers/notifyReducer";
 import userReducer from "./reducers/userReducer";
 import statusReducer from "./reducers/statusReducer";
+import postReducer from "./reducers/postReducer";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         notify: notifyReducer,
         user: userReducer,
         status: statusReducer,
+        post: postReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

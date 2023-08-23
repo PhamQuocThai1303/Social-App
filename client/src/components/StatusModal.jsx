@@ -1,14 +1,19 @@
 import { useSelector, useDispatch } from "react-redux"
 import { setStatus } from "../redux/reducers/statusReducer"
 import { TfiCamera, TfiGallery, TfiClose } from "react-icons/tfi";
-import { checkImage } from "../utils/uploadImage";
+import { checkImage, imageUpload } from "../utils/uploadImage";
 import { useState, useRef } from "react";
+import Loading from './alert/Loading'
 
 import { toast } from 'react-toastify';
 
+import { useCreatPostMutation } from "../redux/actions/postAction";
 
 
 const StatusModal = () => {
+    const { user } = useSelector((state) => state.auth)
+    const userId = user?._id
+
     const [images, setImages] = useState([])
     const [content, setContent] = useState('')
     const [stream, setStream] = useState(false)
@@ -17,6 +22,7 @@ const StatusModal = () => {
     const videoRef = useRef()
     const refCanvas = useRef()
     const dispatch = useDispatch()
+    const [creatPost, { isLoading }] = useCreatPostMutation()
 
     const deleteImg = (index, e) => {
         e.preventDefault()
@@ -71,6 +77,28 @@ const StatusModal = () => {
         })
         setImages([...images, ...newImg])
     }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            let media;
+            if (images.length > 0) {
+                media = await imageUpload(images)
+            }
+            const { message, newPost } = await creatPost({ userId, content, images: media }).unwrap()
+            dispatch(setStatus(false))
+            setContent('')
+            setImages([])
+            if (tracks) tracks.stop
+            // window.location.reload() //reload web
+            toast.success(message)
+
+        } catch (error) {
+            toast.error(error.data.message)
+        }
+    }
+    if (isLoading) return <Loading />
+
     return (
         <div className="max-w-2xl mx-auto">
             <div id="default-modal" data-modal-show="true" aria-hidden="true" className="bg-gray-200/50 overflow-x-hidden overflow-y-auto fixed w-full h-full sm:h-full top-0 left-0 right-0 sm:inset-0 z-50 sm:flex sm:justify-center sm:items-center">
@@ -140,7 +168,8 @@ const StatusModal = () => {
                                         </textarea>
                                     </div>
                                     <div className="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
-                                        <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                                        <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+                                            onClick={(e) => handleSubmit(e)}>
                                             Post
                                         </button>
                                         <div className="flex pl-0 space-x-1 sm:pl-2">

@@ -26,10 +26,14 @@ app.use('/', express.static(path.join(__dirname, 'public'))) //static
 
 app.use('/', require('./routes/root')) //root
 
+// auth
 app.use('/auth', require('./routes/authRoutes'))
 
+//user
 app.use('/', require('./routes/userRoutes'))
 
+//post
+app.use('/', require('./routes/postRoutes'))
 
 
 //Routes
