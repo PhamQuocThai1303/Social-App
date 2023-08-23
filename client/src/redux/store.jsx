@@ -14,7 +14,7 @@ export const store = configureStore({
         notify: notifyReducer,
         user: userReducer,
         status: statusReducer,
-        post: postReducer,
+        homePost: postReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

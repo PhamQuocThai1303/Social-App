@@ -3,11 +3,14 @@ const router = express.Router()
 const postController = require('../controllers/postController')
 
 const {
-    createPost
+    createPost,
+    getPost
 } = postController
 
 router.route('/post')
     .post(createPost)
 
+router.route('/post/:id')
+    .get(getPost)
 
 module.exports = router

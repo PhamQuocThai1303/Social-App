@@ -90,7 +90,7 @@ const StatusModal = () => {
             setContent('')
             setImages([])
             if (tracks) tracks.stop
-            // window.location.reload() //reload web
+            window.location.reload() //reload web
             toast.success(message)
 
         } catch (error) {

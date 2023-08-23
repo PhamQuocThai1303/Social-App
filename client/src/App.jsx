@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { useRefreshMutation } from './redux/actions/authAction'
+import { useGetPostQuery } from './redux/actions/postAction'
 import { Navigate } from 'react-router-dom'
 
 import Register from './pages/register'
@@ -26,6 +27,8 @@ function App() {
   const [refresh] = useRefreshMutation()
   const firstLogin = localStorage.getItem("firstLogin")
 
+  const { posts, isLoading } = useGetPostQuery({ id: user._id })
+
   useEffect(() => {
     if (token !== null) {
       localStorage.setItem("firstLogin", true)
@@ -40,6 +43,10 @@ function App() {
       refresh()
     }
   }, [])
+
+  useEffect(() => {
+
+  }, [token])
 
 
   return (
