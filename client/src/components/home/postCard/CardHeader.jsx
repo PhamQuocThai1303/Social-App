@@ -13,7 +13,7 @@ function classNames(...classes) {
 
 const CardHeader = ({ user, date }) => {
     return (
-        <div className='flex items-center border-b-2'>
+        <div className='flex items-center '>
             <div className='m-2'>
                 <Avatar avatar={user?.avatar} />
             </div>

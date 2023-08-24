@@ -7,8 +7,8 @@ const Home = () => {
 
     const { posts, postsLength } = useSelector((state) => state.homePost)
     return (
-        <div className="grid mx-2 sm:grid-cols-12 sm:py-4">
-            <div className="col-start-4 col-span-6">
+        <div className="grid mx-2 sm:grid-cols-12 sm:py-4 ">
+            <div className="sm:col-start-4 sm:col-span-6 ">
                 <Status />
                 {
                     posts
