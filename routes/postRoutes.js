@@ -4,7 +4,9 @@ const postController = require('../controllers/postController')
 
 const {
     createPost,
-    getPost
+    getPost,
+    likePost,
+    unlikePost,
 } = postController
 
 router.route('/post')
@@ -12,5 +14,11 @@ router.route('/post')
 
 router.route('/post/:id')
     .get(getPost)
+
+router.route('/post/like')
+    .patch(likePost)
+
+router.route('/post/unlike')
+    .patch(unlikePost)
 
 module.exports = router

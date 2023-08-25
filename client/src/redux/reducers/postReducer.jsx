@@ -24,9 +24,31 @@ const postSlice = createSlice({
                 postsLength: postsLength
             };
         },
+        likePost: (state, action) => {
+            const { post, user } = action.payload
+            const newPost = { ...post, likes: [...post.likes, user] }
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id === newPost._id) item = { ...newPost }
+                    return item
+                })
+            }
+        },
+        unlikePost: (state, action) => {
+            const { post, user } = action.payload
+            const newPost = { ...post, likes: post.likes.filter(item => item._id !== user._id) }
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id === newPost._id) item = { ...newPost }
+                    return item
+                })
+            }
+        },
     }
 })
 
-export const { createPost, getPost } = postSlice.actions
+export const { createPost, getPost, likePost, unlikePost } = postSlice.actions
 
 export default postSlice.reducer

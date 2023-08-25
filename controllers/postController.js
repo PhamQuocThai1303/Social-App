@@ -41,7 +41,53 @@ const getPost = async (req, res) => {
 
 }
 
+// @desc likePOst
+// @route PATCH /post/like
+// @access Public
+const likePost = async (req, res) => {
+    const { post, user } = req.body
+    const postId = post?._id
+    const userId = user?._id
+    try {
+
+        const like = await Post.findOneAndUpdate({ _id: postId }, {
+            $push: { likes: userId }
+        }, { new: true })
+
+        if (!like) return res.status(400).json({ message: 'This post does not exist.' })
+
+        res.json({ message: 'Liked Post!' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+
+}
+
+// @desc unlikePost
+// @route PATCH /post/unlike
+// @access Public
+const unlikePost = async (req, res) => {
+    const { post, user } = req.body
+    const postId = post?._id
+    const userId = user?._id
+
+    try {
+        const like = await Post.findOneAndUpdate({ _id: postId }, {
+            $pull: { likes: userId }
+        }, { new: true })
+
+        if (!like) return res.status(400).json({ message: 'This post does not exist.' })
+
+        res.json({ message: 'UnLiked Post!' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+
+}
+
 module.exports = {
     createPost,
-    getPost
+    getPost,
+    likePost,
+    unlikePost,
 }
