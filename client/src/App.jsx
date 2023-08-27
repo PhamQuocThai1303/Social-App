@@ -8,7 +8,8 @@ import { Navigate } from 'react-router-dom'
 import Register from './pages/register'
 import Login from './pages/login'
 import Home from './pages/home'
-import Post from './pages/post'
+// import Post from './pages/post'
+import Posts from './components/home/Posts'
 import Header from './components/header/Header'
 import NotFound from './pages/notFound'
 import Message from './pages/message/message'
@@ -44,10 +45,6 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-
-  }, [token])
-
 
   return (
     <>
@@ -68,9 +65,8 @@ function App() {
             element={<Profile />}
           />
           <Route
-            path="/post/:postId"
-            // element={isAuth ? <Post /> : <Navigate to="/" />}
-            element={<Post />}
+            path="/post"
+            element={<Posts />}
           />
           <Route path="*" element={<NotFound />} />
 

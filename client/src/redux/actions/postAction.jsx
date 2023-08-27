@@ -1,6 +1,6 @@
 import { apiSlice } from "../api/apiSlice"
 import { setError, setSuccess } from "../reducers/notifyReducer"
-import { createPost, getPost, likePost, unlikePost } from "../reducers/postReducer"
+import { createPost, getPost, updatePost, likePost, unlikePost } from "../reducers/postReducer"
 
 export const postApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -33,6 +33,23 @@ export const postApiSlice = apiSlice.injectEndpoints({
                     const { posts, postsLength } = data
                     dispatch(getPost({ posts, postsLength }))
                     // console.log(posts);
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+                }
+            }
+        }),
+
+        updatePost: builder.mutation({
+            query: args => ({
+                url: '/post',
+                method: 'PATCH',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { newPost } = data
+                    dispatch(updatePost({ newPost }))
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }
@@ -76,6 +93,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreatPostMutation,
     useGetPostQuery,
+    useUpdatePostMutation,
     useLikePostMutation,
     useUnlikePostMutation,
 } = postApiSlice 

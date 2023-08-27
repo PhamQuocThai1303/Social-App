@@ -11,7 +11,7 @@ const Home = () => {
             <div className="sm:col-start-4 sm:col-span-6 ">
                 <Status />
                 {
-                    posts
+                    posts && postsLength
                         ? postsLength > 0 ? <PostCard /> : <h1>No Post</h1>
                         : <Loading />
                 }

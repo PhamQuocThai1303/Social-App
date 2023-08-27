@@ -28,7 +28,7 @@ const getPost = async (req, res) => {
         const foundUser = await User.findById(id).select('-password').exec()
         const posts = await Post.find({
             user: [...foundUser.following, foundUser._id] //get all posts of authUser or posts of following people of authuser
-        }).populate("user likes", "avatar username fullname")
+        }).sort('-createdAt').populate("user likes", "avatar username fullname")
 
         res.json({
             message: "success",
@@ -39,6 +39,26 @@ const getPost = async (req, res) => {
         return res.status(500).json({ message: error })
     }
 
+}
+
+// @desc updatePost
+// @route PATCH /post
+// @access Public
+const updatePost = async (req, res) => {
+    const { postId, content, images } = req.body
+
+    const post = await Post.findOneAndUpdate({ _id: postId }, {
+        content, images
+    }).populate("user likes", "avatar username fullname")
+
+    res.json({
+        message: 'Post updated!',
+        newPost: {
+            ...post._doc, //copy all properties of post to newPost
+            content, //content and images were added too this copy
+            images
+        }
+    })
 }
 
 // @desc likePOst
@@ -88,6 +108,7 @@ const unlikePost = async (req, res) => {
 module.exports = {
     createPost,
     getPost,
+    updatePost,
     likePost,
     unlikePost,
 }

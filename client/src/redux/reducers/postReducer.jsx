@@ -13,7 +13,7 @@ const postSlice = createSlice({
             const newPost = action.payload.newPost
             return {
                 ...state,
-                posts: [...state.posts, newPost]
+                posts: [newPost, ...state.posts]
             };
         },
         getPost: (state, action) => {
@@ -24,6 +24,17 @@ const postSlice = createSlice({
                 postsLength: postsLength
             };
         },
+        updatePost: (state, action) => {
+            const newPost = action.payload.newPost
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id === newPost._id) item = { ...newPost }
+                    return item
+                })
+            }
+        },
+
         likePost: (state, action) => {
             const { post, user } = action.payload
             const newPost = { ...post, likes: [...post.likes, user] }
@@ -49,6 +60,6 @@ const postSlice = createSlice({
     }
 })
 
-export const { createPost, getPost, likePost, unlikePost } = postSlice.actions
+export const { createPost, getPost, updatePost, likePost, unlikePost } = postSlice.actions
 
 export default postSlice.reducer

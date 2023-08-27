@@ -12,7 +12,7 @@ const PostCard = () => {
                 {
                     posts.map((post, index) => (
                         <div key={index} className="w-full h-full border-2 rounded my-5">
-                            <CardHeader user={post.user} date={post.createdAt} />
+                            <CardHeader post={post} />
                             <CardBody images={post.images} content={post.content} />
                             <CardFooter post={post} />
                         </div>

@@ -5,12 +5,14 @@ const postController = require('../controllers/postController')
 const {
     createPost,
     getPost,
+    updatePost,
     likePost,
     unlikePost,
 } = postController
 
 router.route('/post')
     .post(createPost)
+    .patch(updatePost)
 
 router.route('/post/:id')
     .get(getPost)
