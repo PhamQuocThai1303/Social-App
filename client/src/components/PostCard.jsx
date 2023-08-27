@@ -3,23 +3,21 @@ import { useSelector } from "react-redux"
 import CardBody from "./home/postCard/CardBody"
 import CardHeader from "./home/postCard/CardHeader"
 import CardFooter from "./home/postCard/CardFooter"
+import Comments from "./home/Comments"
+import InputComment from "./home/InputComment"
 
-const PostCard = () => {
+const PostCard = ({ post }) => {
     const { posts } = useSelector((state) => state.homePost)
     return (
-        <div className="flex w-full sm:grid sm:grid-cols-12 flex-col items-center justify-center">
-            <div className="sm:col-start-2 sm:col-span-10 w-full">
-                {
-                    posts.map((post, index) => (
-                        <div key={index} className="w-full h-full border-2 rounded my-5">
-                            <CardHeader post={post} />
-                            <CardBody images={post.images} content={post.content} />
-                            <CardFooter post={post} />
-                        </div>
-                    ))
-                }
-            </div>
+
+        <div className="w-full h-full border-2 rounded my-5">
+            <CardHeader post={post} />
+            <CardBody images={post.images} content={post.content} />
+            <CardFooter post={post} />
+            <Comments post={post} />
+            <InputComment post={post} />
         </div>
+
     )
 }
 export default PostCard

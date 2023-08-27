@@ -28,7 +28,15 @@ const getPost = async (req, res) => {
         const foundUser = await User.findById(id).select('-password').exec()
         const posts = await Post.find({
             user: [...foundUser.following, foundUser._id] //get all posts of authUser or posts of following people of authuser
-        }).sort('-createdAt').populate("user likes", "avatar username fullname")
+        }).sort('-createdAt')
+            .populate("user likes", "avatar username fullname")//path: user likes, select:avatar username fullname; apply user and likes with select
+            .populate({ //apply all user and likes to comment with select
+                path: "comments",
+                populate: {
+                    path: "user likes",
+                    select: "-password"
+                }
+            })
 
         res.json({
             message: "success",

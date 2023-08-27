@@ -1,5 +1,6 @@
 import Status from "../components/home/Status"
 import PostCard from "../components/PostCard"
+import Posts from "../components/home/Posts"
 import { useSelector } from "react-redux"
 import Loading from "../components/alert/Loading"
 
@@ -12,7 +13,7 @@ const Home = () => {
                 <Status />
                 {
                     posts && postsLength
-                        ? postsLength > 0 ? <PostCard /> : <h1>No Post</h1>
+                        ? postsLength > 0 ? <Posts /> : <h1>No Post</h1>
                         : <Loading />
                 }
             </div>

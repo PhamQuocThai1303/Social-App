@@ -35,6 +35,9 @@ app.use('/', require('./routes/userRoutes'))
 //post
 app.use('/', require('./routes/postRoutes'))
 
+//comment
+app.use('/', require('./routes/commentRoutes'))
+
 
 //Routes
 
