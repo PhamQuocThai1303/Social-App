@@ -22,8 +22,35 @@ const createComment = async (req, res) => {
     res.json({ newComment })
 }
 
+// @desc likeComment
+// @route POST /comment/like
+// @access Public
+const likeComment = async (req, res) => {
+    const { cmtId, userId } = req.body
+
+    await Comment.findOneAndUpdate({ _id: cmtId }, {
+        $push: { likes: userId }
+    }, { new: true })
+
+    res.json({ message: 'Liked Comment!' })
+}
+
+// @desc unlikeComment
+// @route POST /comment/unlike
+// @access Public
+const unlikeComment = async (req, res) => {
+    const { cmtId, userId } = req.body
+
+    await Comment.findOneAndUpdate({ _id: cmtId }, {
+        $pull: { likes: userId }
+    }, { new: true })
+
+    res.json({ message: 'Unliked Comment!' })
+}
+
 
 module.exports = {
     createComment,
-
+    likeComment,
+    unlikeComment,
 }

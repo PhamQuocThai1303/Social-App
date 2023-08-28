@@ -13,8 +13,8 @@ const Home = () => {
                 <Status />
                 {
                     posts && postsLength
-                        ? postsLength > 0 ? <Posts /> : <h1>No Post</h1>
-                        : <Loading />
+                        ? <Posts />
+                        : <h1>No Post</h1>
                 }
             </div>
         </div>

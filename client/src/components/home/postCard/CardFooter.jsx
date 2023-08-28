@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment, AiOutlineShareAlt, AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { useLikePostMutation, useUnlikePostMutation } from "../../../redux/actions/postAction";
 
+import CommentModal from "../comments/CommentModal";
 import LikeModal from "./LikeModal";
 
 const CardFooter = ({ post }) => {
@@ -12,6 +13,7 @@ const CardFooter = ({ post }) => {
     const [likePost] = useLikePostMutation()
 
     const [likeModal, setLikeModal] = useState(false)
+    const [cmtModal, setCmtModal] = useState(false)
     const [unlikePost] = useUnlikePostMutation()
     const [isLike, setIsLike] = useState(false)
 
@@ -65,16 +67,21 @@ const CardFooter = ({ post }) => {
                 <div className="flex justify-between px-6 text-2xl items-center">
                     <div className="flex gap-7 cursor-pointer">
                         <small onClick={() => setLikeModal(true)}>{post.likes.length}</small>
-                        <small>0</small>
+                        <small onClick={() => setCmtModal(true)}>{post.comments.length}</small>
                         {/* <small className="cursor-default">0</small> */}
                     </div>
-                    <div>
-                        <small className="text-xs cursor-pointer font-semibold">See all comments</small>
-                    </div>
+                    {post.comments.length > 2 &&
+                        <div onClick={() => setCmtModal(true)}>
+                            <small className="text-xs cursor-pointer font-semibold">See all comments</small>
+                        </div>
+                    }
                 </div>
             </div>
             {
                 likeModal && <LikeModal likes={post.likes} setLikeModal={setLikeModal} />
+            }
+            {
+                cmtModal && <CommentModal post={post} setCmtModal={setCmtModal} />
             }
         </>
     )

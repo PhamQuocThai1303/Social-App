@@ -12,18 +12,47 @@ export const commentApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    const { newComment } = data
-                    // console.log(newComment);
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }
             }
         }),
 
+        likeComment: builder.mutation({
+            query: args => ({
+                url: '/comment/like',
+                method: 'POST',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+                }
+            }
+        }),
+
+        unlikeComment: builder.mutation({
+            query: args => ({
+                url: '/comment/unlike',
+                method: 'POST',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+                }
+            }
+        }),
     })
 })
 
 export const {
     useCreateCommentMutation,
+    useLikeCommentMutation,
+    useUnlikeCommentMutation
 
 } = commentApiSlice 
