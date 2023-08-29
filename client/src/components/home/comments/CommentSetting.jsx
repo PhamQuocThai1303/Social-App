@@ -2,6 +2,10 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux"
 import React, { Fragment } from "react"
+import { toast } from 'react-toastify';
+
+import { useDeleteCommentMutation } from '../../../redux/actions/commentAction';
+import { updatePost } from '../../../redux/reducers/postReducer';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -9,6 +13,31 @@ function classNames(...classes) {
 
 const CommentSetting = ({ post, comment }) => {
     const { user } = useSelector((state) => state.auth)
+
+    const dispatch = useDispatch()
+    const [deleteComment] = useDeleteCommentMutation()
+
+    const handleDelete = async (e) => {
+        e.preventDefault()
+        const deleteReplyArr = [...post.comments.filter(cmt => cmt.reply === comment._id), comment] //get all reply cmt of delete cmt
+
+        const newPost = {
+            ...post,
+            comments: post.comments.filter(cmt => !deleteReplyArr.find(item => cmt._id === item._id)) //get all cmt which not in deleteReplyArr
+        }
+
+        dispatch(updatePost({ newPost }))
+
+        try {
+            deleteReplyArr.forEach(async (cmt) => { //delete het cmt trong deleteReplyCmt
+                await deleteComment({ cmtId: cmt._id, userId: cmt.user }).unwrap()
+            })
+            toast.success("Comment Deleted!")
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
 
     return (
         <>
@@ -40,7 +69,7 @@ const CommentSetting = ({ post, comment }) => {
                                                 active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                 'block px-4 py-2 text-sm'
                                             )}
-                                        // onClick={(e) => handleEditPost(e)}
+                                            onClick={(e) => handleDelete(e)}
                                         >
                                             Delete
                                         </a>

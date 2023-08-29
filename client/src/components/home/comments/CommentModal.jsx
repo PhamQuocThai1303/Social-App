@@ -1,7 +1,23 @@
 import { Link } from "react-router-dom"
-import CommentCard from "./CommentCard"
+import React, { useState, useEffect } from "react"
+
+import CommentDisplay from "./CommentDisplay"
 
 const CommentModal = ({ post, setCmtModal }) => {
+
+    const [comments, setComments] = useState([])
+    const [replyComments, setReplyComments] = useState([])
+
+    useEffect(() => {
+        const newCmt = post.comments.filter(cmt => !cmt.reply)
+        setComments(newCmt) //lay ra cmt kphai cmt reply
+    }, [post.comments])
+
+    useEffect(() => {
+        const newRep = post.comments.filter(cmt => cmt.reply) //lay ra cmt reply
+        setReplyComments(newRep)
+    }, [post.comments])
+
     return (
         <div className="max-w-2xl mx-auto">
             <div id="default-modal" data-modal-show="true" aria-hidden="true" className="bg-gray-200/50 overflow-x-hidden overflow-y-auto fixed w-full h-full sm:h-full top-0 left-0 right-0 sm:inset-0 z-50 sm:flex sm:justify-center sm:items-center">
@@ -22,10 +38,9 @@ const CommentModal = ({ post, setCmtModal }) => {
 
                         <div className='mx-2 my-4 flex flex-col gap-4 overflow-y-scroll max-h-[500px]'>
                             {
-                                post?.comments?.map(item => (
-                                    <div key={item._id}>
-                                        <CommentCard post={post} comment={item} />
-                                    </div>
+                                comments.map((cmt, index) => (
+                                    <CommentDisplay key={index} comment={cmt} post={post} replyCmt={replyComments.filter(item => item.reply == cmt._id)} //get replycmt of that cmt 
+                                    />
                                 ))
                             }
                         </div>

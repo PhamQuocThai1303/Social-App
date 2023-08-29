@@ -8,7 +8,8 @@ const verifyJWT = require('../middleware/verifyJWT')
 const {
     createComment,
     likeComment,
-    unlikeComment
+    unlikeComment,
+    deleteComment
 } = commentController
 
 router.route('/comment')
@@ -19,5 +20,8 @@ router.route('/comment/like')
 
 router.route('/comment/unlike')
     .post(unlikeComment)
+
+router.route('/comment/delete')
+    .delete(deleteComment)
 
 module.exports = router

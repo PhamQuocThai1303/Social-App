@@ -47,12 +47,28 @@ export const commentApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+
+        deleteComment: builder.mutation({
+            query: args => ({
+                url: '/comment/delete',
+                method: 'DELETE',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+                }
+            }
+        }),
     })
 })
 
 export const {
     useCreateCommentMutation,
     useLikeCommentMutation,
-    useUnlikeCommentMutation
+    useUnlikeCommentMutation,
+    useDeleteCommentMutation
 
 } = commentApiSlice 
