@@ -8,6 +8,7 @@ const {
     updatePost,
     likePost,
     unlikePost,
+    getUserPost,
 } = postController
 
 router.route('/post')
@@ -16,6 +17,9 @@ router.route('/post')
 
 router.route('/post/:id')
     .get(getPost)
+
+router.route('/post/:id/userPost')
+    .get(getUserPost)
 
 router.route('/post/like')
     .patch(likePost)

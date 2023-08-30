@@ -35,7 +35,6 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
 
         try {
             const { newComment: res } = await createComment({ ...newComment, postId: post?._id, postUserId: post?.user?._id, userId: user?._id }).unwrap()
-
             const newData = { ...res, user: user }
             const newPost = { ...post, comments: [...post.comments, newData] }
             dispatch(updatePost({ newPost })) //update post lan 2 khi da lay dc API

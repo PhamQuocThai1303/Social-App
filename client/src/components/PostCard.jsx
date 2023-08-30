@@ -9,7 +9,6 @@ import InputComment from "./home/InputComment"
 
 const PostCard = ({ post }) => {
     const { posts } = useSelector((state) => state.homePost)
-
     return (
 
         <div className="w-full h-full border-2 rounded my-5">

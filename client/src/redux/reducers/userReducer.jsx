@@ -2,14 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     users: [],
-    posts: []
+    posts: [],
+    postsLength: 0
 }
 
 const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        getUser: (state, action) => {
+        getUser: (state, action) => { //do trong react có lưu lại lịch sử của params nên nếu có chuyển qua lại giữa các params sẽ không hoạt động nếu mình muốn lấy params, nên phải lưu tất cả params vào lại trong users, sau đấy đến profile nào thì lấy users trùng vs profile mình muốn lấy
             const foundUsers = action.payload.foundUser
             return {
                 ...state,
@@ -38,10 +39,18 @@ const userSlice = createSlice({
                     return item
                 })
             }
-        }
+        },
+        getUserPosts: (state, action) => {
+            const { posts, postsLength } = action.payload
+            return {
+                ...state,
+                posts: posts,
+                postsLength: postsLength
+            };
+        },
     }
 })
 
-export const { getUser, followUser, unFollowUser } = userSlice.actions
+export const { getUser, followUser, unFollowUser, getUserPosts } = userSlice.actions
 
 export default userSlice.reducer

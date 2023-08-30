@@ -5,7 +5,7 @@ import FollowBtn from '../FollowBtn'
 import FollowerModal from './FollowerModal'
 import FollowingModal from './FollowingModal'
 
-const Info = ({ id, profile, auth }) => {
+const Info = ({ id, profile, auth, postLn }) => {
     const [userData, setUserData] = useState({})
     const [isProfile, setIsProfile] = useState()
     const [isEdit, setIsEdit] = useState(false)
@@ -32,7 +32,7 @@ const Info = ({ id, profile, auth }) => {
             <div className="" key={userData?._id}>
                 <div className="p-8 bg-white mt-20">
                     <div className="grid grid-cols-1 md:grid-cols-3">
-                        <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
+                        <div className="grid grid-cols-3 text-center order-last md:order-first sm:mt-20 mt-10 md:mt-0">
                             <div className='cursor-pointer' onClick={() => setShowFollower(true)}>
                                 <p className="font-bold text-gray-700 text-xl">{userData?.followers?.length}</p>
                                 <p className="text-gray-400"> Followers</p>
@@ -42,7 +42,7 @@ const Info = ({ id, profile, auth }) => {
                                 <p className="text-gray-400">Following</p>
                             </div>
                             <div>
-                                <p className="font-bold text-gray-700 text-xl">89</p>
+                                <p className="font-bold text-gray-700 text-xl">{postLn}</p>
                                 <p className="text-gray-400">Post</p>
                             </div>
                         </div>
@@ -58,7 +58,7 @@ const Info = ({ id, profile, auth }) => {
                             </div>
                         </div>
 
-                        <div className="space-x-8 flex justify-center mt-32 md:mt-0 md:justify-center">
+                        <div className="space-x-8 flex justify-center sm:mt-32 mt-24 md:mt-0 md:justify-center">
                             {isProfile
                                 ? <button
                                     className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
@@ -79,7 +79,7 @@ const Info = ({ id, profile, auth }) => {
                         </div>
                     </div>
 
-                    <div className="mt-20 text-center border-b pb-4">
+                    <div className="sm:mt-20 mt-10 text-center pb-4">
                         <h1 className="text-4xl font-medium text-gray-700">{userData?.fullname}, <span className="font-light text-gray-500">{userData?.gender}</span></h1>
                         <p className="font-sans font-bold text-lg text-gray-600 mt-3">{userData?.address}</p>
 
@@ -87,7 +87,7 @@ const Info = ({ id, profile, auth }) => {
                         <p className="mt-2 text-gray-500">{userData?.website}</p>
                     </div>
 
-                    <div className="mt-4 font-mono flex flex-col justify-center">
+                    <div className="mt-4 font-mono flex flex-col justify-center border-b pb-4">
                         <p className="text-gray-600 text-center font-light lg:px-16">{userData?.story}</p>
 
                     </div>

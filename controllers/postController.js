@@ -113,10 +113,34 @@ const unlikePost = async (req, res) => {
 
 }
 
+// @desc getUserPost
+// @route GET /post/:id/userPost
+// @access Public
+const getUserPost = async (req, res) => {
+
+    const posts = await Post.find({ user: req.params.id }).sort("-createdAt")
+        .populate("user likes", "avatar username fullname")//path: user likes, select:avatar username fullname; apply user and likes with select
+        .populate({ //apply all user and likes to comment with select
+            path: "comments",
+            populate: {
+                path: "user likes",
+                select: "-password"
+            }
+        })
+
+    res.json({
+        message: "success",
+        postsLength: posts.length,
+        posts
+    })
+
+}
+
 module.exports = {
     createPost,
     getPost,
     updatePost,
     likePost,
     unlikePost,
+    getUserPost
 }
