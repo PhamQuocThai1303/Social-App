@@ -156,6 +156,30 @@ const getSinglePost = async (req, res) => { //chua su dung vi mot so vde lien qu
     res.json({ post })
 }
 
+// @desc getDiscoverPost
+// @route GET /discover/:id
+// @access Public
+const getDiscoverPost = async (req, res) => {
+
+    const foundUser = await User.findById(req.params.id).select('-password').exec()
+
+    const newArr = [...foundUser.following, foundUser._id]
+
+    const posts = await Post.aggregate([
+        { $match: { user: { $nin: newArr } } },//get user not found in newArr
+        { $match: { images: { $ne: [] } } }, //get post that have images
+        { $sample: { size: Number(12) } }, //get randomly some posts from user who in $match before
+
+    ])
+
+    return res.json({
+        message: 'Success!',
+        postsLength: posts.length,
+        posts
+    })
+}
+
+
 module.exports = {
     createPost,
     getPost,
@@ -164,4 +188,5 @@ module.exports = {
     unlikePost,
     getUserPost,
     getSinglePost,
+    getDiscoverPost,
 }

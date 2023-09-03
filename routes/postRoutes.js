@@ -10,6 +10,7 @@ const {
     unlikePost,
     getUserPost,
     getSinglePost,
+    getDiscoverPost,
 } = postController
 
 router.route('/post')
@@ -30,5 +31,8 @@ router.route('/post/like')
 
 router.route('/post/unlike')
     .patch(unlikePost)
+
+router.route('/discover/:id')
+    .get(getDiscoverPost)
 
 module.exports = router

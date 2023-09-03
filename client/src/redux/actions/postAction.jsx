@@ -2,6 +2,7 @@ import { apiSlice } from "../api/apiSlice"
 import { setError, setSuccess } from "../reducers/notifyReducer"
 import { createPost, getPost, updatePost, likePost, unlikePost } from "../reducers/postReducer"
 import { getUserPosts } from "../reducers/userReducer"
+import { getDiscoverPost } from "../reducers/discoverReducer"
 
 export const postApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -91,7 +92,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
 
         getUserPost: builder.query({
             query: args => ({
-                url: `/post/${args.id}/userPost`,
+                url: `/post/${user._id}/userPost`,
                 method: 'GET',
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -119,6 +120,22 @@ export const postApiSlice = apiSlice.injectEndpoints({
         //         }
         //     }
         // }),
+
+        getDiscoverPost: builder.query({
+            query: args => ({
+                url: `/discover/${args.id}`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { posts, postsLength } = data
+                    dispatch(getDiscoverPost({ posts, postsLength }))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
     })
 })
 
@@ -129,5 +146,6 @@ export const {
     useLikePostMutation,
     useUnlikePostMutation,
     useGetUserPostQuery,
-    useGetSinglePostQuery,
+    // useGetSinglePostQuery,
+    useGetDiscoverPostQuery,
 } = postApiSlice 

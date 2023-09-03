@@ -6,6 +6,7 @@ import notifyReducer from "./reducers/notifyReducer";
 import userReducer from "./reducers/userReducer";
 import statusReducer from "./reducers/statusReducer";
 import postReducer from "./reducers/postReducer";
+import discoverReducer from "./reducers/discoverReducer";
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
         user: userReducer,
         status: statusReducer,
         homePost: postReducer,
+        discover: discoverReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

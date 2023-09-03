@@ -17,6 +17,7 @@ import Discover from './pages/discover'
 import Profile from './pages/profile/[id]'
 import Post from './pages/post/[id]'
 import StatusModal from './components/StatusModal'
+import Loading from './components/alert/Loading'
 
 import PrivateRouter from './redux/actions/PrivateRouter'
 import Alert from './components/alert/Alert'
@@ -60,7 +61,7 @@ function App() {
         <Route exact path='/' element={<PrivateRouter />}>
 
           <Route path='/message' element={<Message />} />
-          <Route path='/discover' element={<Discover />} />
+          <Route path='/discover' element={user?._id ? <Discover userId={user?._id} /> : <Loading />} />
           <Route
             path="/profile/:userId"
             element={<Profile />}
