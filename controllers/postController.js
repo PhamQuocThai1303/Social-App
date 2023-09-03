@@ -136,11 +136,32 @@ const getUserPost = async (req, res) => {
 
 }
 
+// @desc getSinglePost
+// @route GET /post/singlePost/:id
+// @access Public
+const getSinglePost = async (req, res) => { //chua su dung vi mot so vde lien quan den reducer post o frontend
+
+    const post = await Post.findById(req.params.id)
+        .populate("user likes", "avatar username fullname followers")
+        .populate({
+            path: "comments",
+            populate: {
+                path: "user likes",
+                select: "-password"
+            }
+        })
+
+    if (!post) return res.status(400).json({ message: 'This post does not exist.' })
+
+    res.json({ post })
+}
+
 module.exports = {
     createPost,
     getPost,
     updatePost,
     likePost,
     unlikePost,
-    getUserPost
+    getUserPost,
+    getSinglePost,
 }

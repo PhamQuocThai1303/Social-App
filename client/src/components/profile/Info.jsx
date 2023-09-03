@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { AiOutlineShareAlt } from "react-icons/ai";
 import Loading from '../alert/Loading'
 import EditProfile from './EditProfile'
 import FollowBtn from '../FollowBtn'
@@ -24,6 +25,10 @@ const Info = ({ id, profile, auth, postLn }) => {
             setIsProfile(false)
         }
     }, [id, profile, auth])
+
+    const handleCopyLink = () => {
+        // navigator.clipboard.writeText(`${BASE_URL}/post/${post._id}`)
+    }
 
     if (!userData) return <Loading />
 
@@ -76,6 +81,11 @@ const Info = ({ id, profile, auth, postLn }) => {
                                     Message
                                 </button>
                             }
+                            <button onClick={handleCopyLink}
+                                className="text-white py-2 sm:px-4 px-2 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 text-2xl"
+                            >
+                                <AiOutlineShareAlt />
+                            </button>
                         </div>
                     </div>
 

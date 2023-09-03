@@ -9,7 +9,6 @@ const Posts = ({ id, posts, auth }) => {
     useEffect(() => {
         if (id === auth._id) {
             let newPosts = posts?.filter((post) => post?.user?._id == id)
-            console.log(newPosts);
             setUserPosts(newPosts)
         }
         else {

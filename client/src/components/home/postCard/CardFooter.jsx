@@ -46,6 +46,7 @@ const CardFooter = ({ post }) => {
         }
     }
 
+
     return (
         <>
             <div className="flex flex-col my-3">
@@ -58,7 +59,6 @@ const CardFooter = ({ post }) => {
                             }
                         </div>
                         <AiOutlineComment />
-                        <AiOutlineShareAlt />
                     </div>
                     <div className="cursor-pointer">
                         <AiOutlineBook />

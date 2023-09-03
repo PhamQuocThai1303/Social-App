@@ -15,6 +15,7 @@ import NotFound from './pages/notFound'
 import Message from './pages/message/message'
 import Discover from './pages/discover'
 import Profile from './pages/profile/[id]'
+import Post from './pages/post/[id]'
 import StatusModal from './components/StatusModal'
 
 import PrivateRouter from './redux/actions/PrivateRouter'
@@ -65,8 +66,8 @@ function App() {
             element={<Profile />}
           />
           <Route
-            path="/post"
-            element={<Posts />}
+            path="/post/:postId"
+            element={<Post />}
           />
           <Route path="*" element={<NotFound />} />
 

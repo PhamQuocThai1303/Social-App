@@ -104,6 +104,21 @@ export const postApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+
+        // getSinglePost: builder.query({
+        //     query: args => ({
+        //         url: `/post/singlePost/${args.id}`,
+        //         method: 'GET',
+        //     }),
+        //     async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        //         try {
+        //             const { data } = await queryFulfilled
+        //             const { post } = data
+        //         } catch (err) {
+        //             dispatch(console.log(err))
+        //         }
+        //     }
+        // }),
     })
 })
 
@@ -113,5 +128,6 @@ export const {
     useUpdatePostMutation,
     useLikePostMutation,
     useUnlikePostMutation,
-    useGetUserPostQuery
+    useGetUserPostQuery,
+    useGetSinglePostQuery,
 } = postApiSlice 
