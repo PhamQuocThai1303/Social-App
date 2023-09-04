@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-// import { useGetSinglePostQuery } from "../../redux/actions/postAction";
+import { useGetSinglePostQuery } from "../../redux/actions/postAction";
 import PostCard from "../../components/PostCard";
 import Loading from "../../components/alert/Loading";
 
-const Post = () => {
+const Post = () => { //SinglePost
     const { postId } = useParams()
-    // const { data } = useGetSinglePostQuery({ id: postId })
-    const { posts } = useSelector((state) => state.homePost)
+    const { data } = useGetSinglePostQuery({ id: postId })
+    const { posts } = useSelector((state) => state.singlePost)
     const [post, setPost] = useState([])
 
     const dispatch = useDispatch()
@@ -18,7 +18,7 @@ const Post = () => {
             let newPost = posts?.filter((post) => post?._id == postId)
             setPost(newPost)
         }
-    }, [postId, posts])
+    }, [postId, posts, data])
 
     return (
         <div className="grid mx-2 sm:grid-cols-12 sm:py-4 ">

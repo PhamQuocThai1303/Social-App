@@ -6,7 +6,7 @@ const initialState = {
 }
 
 const discoverSlice = createSlice({
-    name: "post",
+    name: "discover",
     initialState,
     reducers: {
         getDiscoverPost: (state, action) => {

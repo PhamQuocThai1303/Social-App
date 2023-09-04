@@ -1,8 +1,9 @@
 import { apiSlice } from "../api/apiSlice"
 import { setError, setSuccess } from "../reducers/notifyReducer"
 import { createPost, getPost, updatePost, likePost, unlikePost } from "../reducers/postReducer"
-import { getUserPosts } from "../reducers/userReducer"
+import { getUserPosts, updateUserPost, likeUserPost, unlikeUserPost } from "../reducers/userReducer"
 import { getDiscoverPost } from "../reducers/discoverReducer"
+import { getSinglePost, likeSinglePost, unlikeSinglePost } from "../reducers/singlePostReducer"
 
 export const postApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -68,6 +69,8 @@ export const postApiSlice = apiSlice.injectEndpoints({
                 try {
                     const { post, user } = arg
                     dispatch(likePost({ post, user }))
+                    dispatch(likeUserPost({ post, user }))
+                    dispatch(likeSinglePost({ post, user }))
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }
@@ -84,6 +87,8 @@ export const postApiSlice = apiSlice.injectEndpoints({
                 try {
                     const { post, user } = arg
                     dispatch(unlikePost({ post, user }))
+                    dispatch(unlikeUserPost({ post, user }))
+                    dispatch(unlikeSinglePost({ post, user }))
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }
@@ -92,7 +97,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
 
         getUserPost: builder.query({
             query: args => ({
-                url: `/post/${user._id}/userPost`,
+                url: `/post/${args.id}/userPost`,
                 method: 'GET',
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -106,20 +111,22 @@ export const postApiSlice = apiSlice.injectEndpoints({
             }
         }),
 
-        // getSinglePost: builder.query({
-        //     query: args => ({
-        //         url: `/post/singlePost/${args.id}`,
-        //         method: 'GET',
-        //     }),
-        //     async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        //         try {
-        //             const { data } = await queryFulfilled
-        //             const { post } = data
-        //         } catch (err) {
-        //             dispatch(console.log(err))
-        //         }
-        //     }
-        // }),
+        getSinglePost: builder.query({
+            query: args => ({
+                url: `/post/singlePost/${args.id}`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { post } = data
+                    dispatch(getSinglePost({ posts: [post], postsLength: 1 }))
+
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
 
         getDiscoverPost: builder.query({
             query: args => ({
@@ -146,6 +153,6 @@ export const {
     useLikePostMutation,
     useUnlikePostMutation,
     useGetUserPostQuery,
-    // useGetSinglePostQuery,
+    useGetSinglePostQuery,
     useGetDiscoverPostQuery,
 } = postApiSlice 

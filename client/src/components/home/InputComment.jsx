@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AiOutlineSend } from "react-icons/ai";
 
 import { updatePost } from '../../redux/reducers/postReducer';
+import { updateUserPost } from '../../redux/reducers/userReducer';
 import { useCreateCommentMutation } from '../../redux/actions/commentAction';
+import { updateSinglePost } from '../../redux/reducers/singlePostReducer';
 
 const InputComment = ({ children, post, onReply, setOnReply }) => {
     const { user } = useSelector((state) => state.auth)
@@ -31,13 +33,14 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
         }
 
         const newPost = { ...post, comments: [...post.comments, newComment] }
-        dispatch(updatePost({ newPost }))  //update post lan 1
 
         try {
             const { newComment: res } = await createComment({ ...newComment, postId: post?._id, postUserId: post?.user?._id, userId: user?._id }).unwrap()
             const newData = { ...res, user: user }
             const newPost = { ...post, comments: [...post.comments, newData] }
-            dispatch(updatePost({ newPost })) //update post lan 2 khi da lay dc API
+            dispatch(updatePost({ newPost }))
+            dispatch(updateUserPost({ newPost }))
+            dispatch(updateSinglePost({ newPost }))
         } catch (error) {
             console.log(error);
         }

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
 
-import PostThumb from "../PostThumb"
 import PostCard from "../PostCard"
 
 const Posts = ({ id, posts, auth }) => {
     const [userPosts, setUserPosts] = useState([])
 
     useEffect(() => {
+        //solution cua viec id params k thay doi trong react
         if (id === auth._id) {
             let newPosts = posts?.filter((post) => post?.user?._id == id)
             setUserPosts(newPosts)

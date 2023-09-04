@@ -7,6 +7,7 @@ import userReducer from "./reducers/userReducer";
 import statusReducer from "./reducers/statusReducer";
 import postReducer from "./reducers/postReducer";
 import discoverReducer from "./reducers/discoverReducer";
+import singlePostReducer from "./reducers/singlePostReducer";
 
 export const store = configureStore({
     reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
         status: statusReducer,
         homePost: postReducer,
         discover: discoverReducer,
+        singlePost: singlePostReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

@@ -5,7 +5,10 @@ import React, { Fragment } from "react"
 import { toast } from 'react-toastify';
 
 import { useDeleteCommentMutation } from '../../../redux/actions/commentAction';
+
 import { updatePost } from '../../../redux/reducers/postReducer';
+import { updateUserPost } from '../../../redux/reducers/userReducer';
+import { updateSinglePost } from '../../../redux/reducers/singlePostReducer';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -27,6 +30,8 @@ const CommentSetting = ({ post, comment }) => {
         }
 
         dispatch(updatePost({ newPost }))
+        dispatch(updateUserPost({ newPost }))
+        dispatch(updateSinglePost({ newPost }))
 
         try {
             deleteReplyArr.forEach(async (cmt) => { //delete het cmt trong deleteReplyCmt

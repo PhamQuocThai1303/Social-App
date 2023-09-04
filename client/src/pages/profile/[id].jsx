@@ -9,9 +9,9 @@ import Posts from '../../components/profile/Posts'
 import Loading from '../../components/alert/Loading'
 
 const Profile = () => {
-    const userId = useParams().userId
-    const { users } = useSelector((state) => state.user)
-    const { posts } = useSelector((state) => state.homePost)
+    const { userId } = useParams()
+    const { users, posts } = useSelector((state) => state.user)
+    // const { posts } = useSelector((state) => state.homePost)
     const { user } = useSelector((state) => state.auth)
     const { data: foundUser } = useGetUserQuery({ id: userId })
     const { data: userPosts } = useGetUserPostQuery({ id: userId })
@@ -30,7 +30,7 @@ const Profile = () => {
                 : <Info id={userId} profile={users} auth={user} postLn={userPosts?.posts?.length} />
             }
             {
-                !userPosts && !posts
+                !userPosts && !posts && !foundUser
                     ? <Loading />
                     : <Posts id={userId} posts={posts} auth={user} /> //do tất cả action như creatCmt, likePost,..., đều áp dụng ở state homePost (do reducer updatePost), nên phải lấy props ở homePost thay vì posts trong state user, điều này sẽ làm cho component Posts load lâu nếu có nhiều dữ liệu do phải find từng post trùng với user, hiện tại chưa tìm được hướng xử lí khác
             }

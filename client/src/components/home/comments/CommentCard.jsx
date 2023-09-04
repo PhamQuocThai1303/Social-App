@@ -6,6 +6,8 @@ import moment from "moment"
 import { AiOutlineHeart, AiFillHeart, AiOutlineEllipsis } from "react-icons/ai";
 
 import { updatePost } from "../../../redux/reducers/postReducer"
+import { updateUserPost } from "../../../redux/reducers/userReducer"
+import { updateSinglePost } from "../../../redux/reducers/singlePostReducer"
 import CommentSetting from "./CommentSetting"
 import { useLikeCommentMutation, useUnlikeCommentMutation } from "../../../redux/actions/commentAction"
 import InputComment from "../InputComment"
@@ -39,6 +41,8 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
         await likeComment({ cmtId: comment._id, userId: user._id }).unwrap()
         dispatch(updatePost({ newPost }))
+        dispatch(updateUserPost({ newPost }))
+        dispatch(updateSinglePost({ newPost }))
         setIsLike(true)
 
     }
@@ -57,6 +61,8 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
         await unlikeComment({ cmtId: comment._id, userId: user._id }).unwrap()
         dispatch(updatePost({ newPost }))
+        dispatch(updateUserPost({ newPost }))
+        dispatch(updateSinglePost({ newPost }))
         setIsLike(false)
 
     }
