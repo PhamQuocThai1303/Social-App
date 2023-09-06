@@ -20,6 +20,7 @@ const Post = () => { //SinglePost
         }
     }, [postId, posts, data])
 
+
     return (
         <div className="grid mx-2 sm:grid-cols-12 sm:py-4 ">
             <div className="sm:col-start-4 sm:col-span-6 mb-10">
@@ -27,7 +28,9 @@ const Post = () => { //SinglePost
                     post.length === 0 &&
                     <Loading />
                 }
-
+                {
+                    post.length === 0 && <h1>This post does not exist</h1>
+                }
                 {
                     post.map(item => (
                         <PostCard key={item._id} post={item} />

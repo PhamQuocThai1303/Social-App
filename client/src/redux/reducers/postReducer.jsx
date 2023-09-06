@@ -57,9 +57,18 @@ const postSlice = createSlice({
                 })
             }
         },
+        deletePost: (state, action) => {
+            const { postId } = action.payload
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id != postId) return item
+                })
+            }
+        },
     }
 })
 
-export const { createPost, getPost, updatePost, likePost, unlikePost } = postSlice.actions
+export const { createPost, getPost, updatePost, likePost, unlikePost, deletePost } = postSlice.actions
 
 export default postSlice.reducer

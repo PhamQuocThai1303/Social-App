@@ -9,6 +9,15 @@ const jwt = require('jsonwebtoken')
 const createComment = async (req, res) => {
     const { postId, userId, content, tag, reply, postUserId } = req.body
 
+    //check exist post if delete
+    const post = await Post.findById(postId)
+    if (!post) return res.status(400).json({ message: "This post does not exist." })
+    //check cmt if post delete
+    if (reply) {
+        const cmt = await Comment.findById(reply)
+        if (!cmt) return res.status(400).json({ message: "This comment does not exist." })
+    }
+
     const newComment = new Comment({
         user: userId, content, tag, reply, postId, postUserId
     })

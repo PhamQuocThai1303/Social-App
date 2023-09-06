@@ -1,9 +1,11 @@
 import { apiSlice } from "../api/apiSlice"
 import { setError, setSuccess } from "../reducers/notifyReducer"
-import { createPost, getPost, updatePost, likePost, unlikePost } from "../reducers/postReducer"
-import { getUserPosts, updateUserPost, likeUserPost, unlikeUserPost } from "../reducers/userReducer"
+import { createPost, getPost, updatePost, likePost, unlikePost, deletePost } from "../reducers/postReducer"
+import { getUserPosts, updateUserPost, likeUserPost, unlikeUserPost, deleteUserPost } from "../reducers/userReducer"
 import { getDiscoverPost } from "../reducers/discoverReducer"
-import { getSinglePost, likeSinglePost, unlikeSinglePost } from "../reducers/singlePostReducer"
+import { getSinglePost, likeSinglePost, unlikeSinglePost, deleteSinglePost } from "../reducers/singlePostReducer"
+
+import { toast } from 'react-toastify';
 
 export const postApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -143,6 +145,24 @@ export const postApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+
+        deletePost: builder.mutation({
+            query: args => ({
+                url: '/deletePost',
+                method: 'DELETE',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { postId } = arg
+                    dispatch(deletePost({ postId }))
+                    dispatch(deleteUserPost({ postId }))
+                    dispatch(deleteSinglePost({ postId }))
+                } catch (err) {
+                    toast.error(err.data.message)
+                }
+            }
+        }),
     })
 })
 
@@ -155,4 +175,5 @@ export const {
     useGetUserPostQuery,
     useGetSinglePostQuery,
     useGetDiscoverPostQuery,
+    useDeletePostMutation,
 } = postApiSlice 

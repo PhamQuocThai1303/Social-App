@@ -5,6 +5,9 @@ import EditProfile from './EditProfile'
 import FollowBtn from '../FollowBtn'
 import FollowerModal from './FollowerModal'
 import FollowingModal from './FollowingModal'
+import { BASE_URL } from '../../utils/config'
+
+import { toast } from 'react-toastify';
 
 const Info = ({ id, profile, auth, postLn }) => {
     const [userData, setUserData] = useState({})
@@ -27,7 +30,8 @@ const Info = ({ id, profile, auth, postLn }) => {
     }, [id, profile, auth])
 
     const handleCopyLink = () => {
-        // navigator.clipboard.writeText(`${BASE_URL}/post/${post._id}`)
+        navigator.clipboard.writeText(`${BASE_URL}/profile/${userData?._id}`)
+        toast.success("Copied profile link")
     }
 
     if (!userData) return <Loading />

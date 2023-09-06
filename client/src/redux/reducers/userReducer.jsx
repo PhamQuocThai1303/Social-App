@@ -80,9 +80,19 @@ const userSlice = createSlice({
                 })
             }
         },
+        deleteUserPost: (state, action) => {
+            const { postId } = action.payload
+
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id !== postId) return item
+                })
+            }
+        },
     }
 })
 
-export const { getUser, followUser, unFollowUser, getUserPosts, updateUserPost, likeUserPost, unlikeUserPost } = userSlice.actions
+export const { getUser, followUser, unFollowUser, getUserPosts, updateUserPost, likeUserPost, unlikeUserPost, deleteUserPost } = userSlice.actions
 
 export default userSlice.reducer

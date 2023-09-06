@@ -50,9 +50,18 @@ const singlePostSlice = createSlice({
                 })
             }
         },
+        deleteSinglePost: (state, action) => {
+            const { postId } = action.payload
+            return {
+                ...state,
+                posts: state.posts.map((item) => {
+                    if (item._id !== postId) return item
+                })
+            }
+        },
     }
 })
 
-export const { getSinglePost, updateSinglePost, likeSinglePost, unlikeSinglePost } = singlePostSlice.actions
+export const { getSinglePost, updateSinglePost, likeSinglePost, unlikeSinglePost, deleteSinglePost } = singlePostSlice.actions
 
 export default singlePostSlice.reducer

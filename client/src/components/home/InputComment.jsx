@@ -7,6 +7,8 @@ import { updateUserPost } from '../../redux/reducers/userReducer';
 import { useCreateCommentMutation } from '../../redux/actions/commentAction';
 import { updateSinglePost } from '../../redux/reducers/singlePostReducer';
 
+import { toast } from 'react-toastify';
+
 const InputComment = ({ children, post, onReply, setOnReply }) => {
     const { user } = useSelector((state) => state.auth)
     const [content, setContent] = useState('')
@@ -42,7 +44,7 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
             dispatch(updateUserPost({ newPost }))
             dispatch(updateSinglePost({ newPost }))
         } catch (error) {
-            console.log(error);
+            toast.error(error.data.message)
         }
 
 

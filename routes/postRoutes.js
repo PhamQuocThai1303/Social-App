@@ -11,6 +11,7 @@ const {
     getUserPost,
     getSinglePost,
     getDiscoverPost,
+    deletePost,
 } = postController
 
 router.route('/post')
@@ -34,5 +35,8 @@ router.route('/post/unlike')
 
 router.route('/discover/:id')
     .get(getDiscoverPost)
+
+router.route('/deletePost')
+    .delete(deletePost)
 
 module.exports = router

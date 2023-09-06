@@ -1,5 +1,6 @@
 const Post = require('../models/Post')
 const User = require('../models/User')
+const Comment = require('../models/Comment')
 const jwt = require('jsonwebtoken')
 
 // @desc createPost
@@ -181,6 +182,23 @@ const getDiscoverPost = async (req, res) => {
     })
 }
 
+// @desc deletePost
+// @route DELETE /deletePost
+// @access Public
+const deletePost = async (req, res) => {
+    const { postId, userId } = req.body
+
+    const post = await Post.findOneAndDelete({ _id: postId, user: userId })
+    await Comment.deleteMany({ _id: { $in: post.comments } })
+
+    res.json({
+        message: 'Deleted Post Success!',
+        newPost: {
+            ...post
+        }
+    })
+}
+
 
 module.exports = {
     createPost,
@@ -191,4 +209,5 @@ module.exports = {
     getUserPost,
     getSinglePost,
     getDiscoverPost,
+    deletePost,
 }

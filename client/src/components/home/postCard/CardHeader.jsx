@@ -1,14 +1,16 @@
 import { Fragment } from 'react'
 import Avatar from '../../Avatar'
-import { Link } from 'react-router-dom'
+import { Link, redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from "react";
 import moment from 'moment'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { TfiMoreAlt } from "react-icons/tfi";
+import { toast } from 'react-toastify';
 
+import { useDeletePostMutation } from '../../../redux/actions/postAction';
 import StatusModal from '../../StatusModal';
-
+import WarningModal from '../../WarningModal';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -17,11 +19,27 @@ function classNames(...classes) {
 const CardHeader = ({ post }) => {
     const { user } = useSelector((state) => state.auth)
     const [isEdit, setIsEdit] = useState(false)
+    const [isWarning, setIsWarning] = useState(false)
+
     const dispatch = useDispatch()
+
+    const [deletePost] = useDeletePostMutation()
 
     const handleEditPost = (e) => {
         e.preventDefault()
         setIsEdit(true)
+    }
+
+    const handleDeletePost = async (e) => {
+        e.preventDefault()
+        setIsWarning(true)
+        // try {
+        //     const { message } = await deletePost({ postId: post._id, userId: user._id }).unwrap()
+        //     window.location.reload() //reload web
+        //     // return redirect("/"); //return homepage
+        // } catch (err) {
+        //     toast.error(err.data.message)
+        // }
     }
 
     return (
@@ -88,6 +106,7 @@ const CardHeader = ({ post }) => {
                                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                             'block px-4 py-2 text-sm'
                                                         )}
+                                                        onClick={(e) => handleDeletePost(e)}
                                                     >
                                                         Delete Post
                                                     </a>
@@ -118,6 +137,9 @@ const CardHeader = ({ post }) => {
             </div>
             {
                 isEdit && <StatusModal post={post} setIsEdit={setIsEdit} />
+            }
+            {
+                isWarning && <WarningModal postId={post._id} userId={user._id} setIsWarning={setIsWarning} />
             }
         </>
     )

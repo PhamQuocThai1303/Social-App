@@ -94,7 +94,7 @@ const StatusModal = ({ post, setIsEdit }) => {
             setContent('')
             setImages([])
             if (tracks) tracks.stop
-            window.location.reload() //reload web
+            window.location.reload() //reload web de solve loi avatar chua dc load
             toast.success(message)
 
         } catch (error) {
@@ -134,7 +134,7 @@ const StatusModal = ({ post, setIsEdit }) => {
             setContent('')
             setImages([])
             if (tracks) tracks.stop
-            // window.location.reload() //reload web
+            window.location.reload() //reload web
             toast.success(msg)
             dispatch(setIsEdit(false))
         } catch (error) {
