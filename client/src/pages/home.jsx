@@ -18,6 +18,10 @@ const Home = () => {
                         : <Posts posts={posts} />
                 }
             </div>
+
+            <div className="sm:col-start-10 sm:col-span-2 ml-10">
+                Right bar
+            </div>
         </div>
     )
 }

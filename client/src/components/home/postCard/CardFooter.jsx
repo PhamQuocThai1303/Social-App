@@ -5,6 +5,9 @@ import { useLikePostMutation, useUnlikePostMutation } from "../../../redux/actio
 
 import CommentModal from "../comments/CommentModal";
 import LikeModal from "./LikeModal";
+import ShareModal from "./ShareModal";
+
+import { BASE_URL } from '../../../utils/config'
 
 const CardFooter = ({ post }) => {
     const { user } = useSelector((state) => state.auth)
@@ -14,6 +17,7 @@ const CardFooter = ({ post }) => {
 
     const [likeModal, setLikeModal] = useState(false)
     const [cmtModal, setCmtModal] = useState(false)
+    const [shareModal, setShareModal] = useState(false)
     const [unlikePost] = useUnlikePostMutation()
     const [isLike, setIsLike] = useState(false)
 
@@ -59,6 +63,7 @@ const CardFooter = ({ post }) => {
                             }
                         </div>
                         <AiOutlineComment />
+                        <AiOutlineShareAlt onClick={() => setShareModal(true)} />
                     </div>
                     <div className="cursor-pointer">
                         <AiOutlineBook />
@@ -82,6 +87,9 @@ const CardFooter = ({ post }) => {
             }
             {
                 cmtModal && <CommentModal post={post} setCmtModal={setCmtModal} />
+            }
+            {
+                shareModal && <ShareModal url={`${BASE_URL}/post/${post._id}`} setShareModal={setShareModal} />
             }
         </>
     )
