@@ -13,13 +13,17 @@ const Profile = () => {
     const { users, posts } = useSelector((state) => state.user)
     // const { posts } = useSelector((state) => state.homePost)
     const { user } = useSelector((state) => state.auth)
-    const { data: foundUser } = useGetUserQuery({ id: userId })
-    const { data: userPosts } = useGetUserPostQuery({ id: userId })
+    const { data: foundUser, refetch: refetchGetUser } = useGetUserQuery({ id: userId })
+    const { data: userPosts, refetch: refetchGetUserPost } = useGetUserPostQuery({ id: userId })
 
+    const [id, setId] = useState("")
 
     const dispatch = useDispatch()
 
     useEffect(() => {
+        setId(userId)
+        refetchGetUser()
+        refetchGetUserPost()
     }, [userId, user, users])
 
 
@@ -27,12 +31,12 @@ const Profile = () => {
         <div>
             {!users
                 ? <Loading />
-                : <Info id={userId} profile={users} auth={user} postLn={userPosts?.posts?.length} />
+                : <Info id={id} profile={users} auth={user} postLn={userPosts?.posts?.length} />
             }
             {
                 !userPosts && !posts && !foundUser
                     ? <Loading />
-                    : <Posts id={userId} posts={posts} auth={user} /> //do tất cả action như creatCmt, likePost,..., đều áp dụng ở state homePost (do reducer updatePost), nên phải lấy props ở homePost thay vì posts trong state user, điều này sẽ làm cho component Posts load lâu nếu có nhiều dữ liệu do phải find từng post trùng với user, hiện tại chưa tìm được hướng xử lí khác
+                    : <Posts id={id} posts={posts} auth={user} /> //do tất cả action như creatCmt, likePost,..., đều áp dụng ở state homePost (do reducer updatePost), nên phải lấy props ở homePost thay vì posts trong state user, điều này sẽ làm cho component Posts load lâu nếu có nhiều dữ liệu do phải find từng post trùng với user, hiện tại chưa tìm được hướng xử lí khác
             }
         </div>
     )

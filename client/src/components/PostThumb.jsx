@@ -10,7 +10,7 @@ const PostThumb = ({ posts }) => {
 
     useEffect(() => {
         if (posts) {
-            setShowPost(posts.slice(0, ((posts.length - next - 1) > 0 ? posts.length - next - 1 : 4)))
+            setShowPost(posts.slice(0, ((posts.length - next) > 0 ? posts.length - next : 4)))
         }
     }, [posts, next])
 

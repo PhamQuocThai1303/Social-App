@@ -10,7 +10,8 @@ const {
     getUser,
     updateUser,
     follow,
-    unfollow
+    unfollow,
+    suggestionUser
 } = userController
 
 router.route('/search')
@@ -25,5 +26,8 @@ router.route('/profile/:id/follow')
 
 router.route('/profile/:id/unfollow')
     .patch(unfollow)
+
+router.route('/suggestUser/:id')
+    .get(suggestionUser)
 
 module.exports = router

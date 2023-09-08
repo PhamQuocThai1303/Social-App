@@ -3,6 +3,7 @@ import { getUser } from "../reducers/userReducer"
 import { setError } from "../reducers/notifyReducer"
 import { followUser, unFollowUser } from "../reducers/userReducer"
 import { followingUser, unFollowingUser } from "../reducers/authReducer"
+import { getSuggestUser } from "../reducers/suggestionReducer"
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -74,6 +75,22 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+        suggestUser: builder.query({
+            query: args => ({
+                url: `/suggestUser/${args.id}`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { users, length } = data
+                    dispatch(getSuggestUser({ users, usersLn: length }))
+                } catch (err) {
+                    console.log(err);
+
+                }
+            }
+        }),
     }),
 
 })
@@ -83,5 +100,6 @@ export const {
     useGetUserQuery,
     useUpdateUserMutation,
     useFollowMutation,
-    useUnfollowMutation
+    useUnfollowMutation,
+    useSuggestUserQuery,
 } = userApiSlice 

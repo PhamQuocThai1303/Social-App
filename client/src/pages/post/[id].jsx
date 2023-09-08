@@ -7,7 +7,7 @@ import Loading from "../../components/alert/Loading";
 
 const Post = () => { //SinglePost
     const { postId } = useParams()
-    const { data } = useGetSinglePostQuery({ id: postId })
+    const { data, refetch } = useGetSinglePostQuery({ id: postId })
     const { posts } = useSelector((state) => state.singlePost)
     const [post, setPost] = useState([])
 
@@ -15,6 +15,7 @@ const Post = () => { //SinglePost
 
     useEffect(() => {
         if (posts) {
+            refetch()
             let newPost = posts?.filter((post) => post?._id == postId)
             setPost(newPost)
         }

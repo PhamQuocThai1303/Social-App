@@ -102,6 +102,26 @@ const unfollow = async (req, res) => {
     }
 }
 
+// @desc suggestionUser
+// @route GET /suggestUser/:id
+// @access Public
+const suggestionUser = async (req, res) => {
+    const foundUser = await User.findById(req.params.id).select('-password').exec()
+
+    const newArr = [...foundUser.following, foundUser._id]
+
+    const users = await User.aggregate([ //group
+        { $match: { _id: { $nin: newArr } } },
+        { $sample: { size: 5 } },
+        { $lookup: { from: 'users', localField: 'followers', foreignField: '_id', as: 'followers' } }, //join User schema with this users, join is acted in field "followers", and the result is stored in an array named followers
+        { $lookup: { from: 'users', localField: 'following', foreignField: '_id', as: 'following' } },//join User schema with this users, join is acted in field "following", and the result is stored in an array named following
+    ]).project("-password") //result return an array of info user (_id, followers, following)
+
+    return res.json({
+        users,
+        length: users.length
+    })
+}
 
 
 module.exports = {
@@ -110,4 +130,5 @@ module.exports = {
     updateUser,
     follow,
     unfollow,
+    suggestionUser
 }

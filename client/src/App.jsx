@@ -32,6 +32,7 @@ function App() {
 
   const { posts, isLoading } = useGetPostQuery({ id: user._id })
 
+
   useEffect(() => {
     if (token !== null) {
       localStorage.setItem("firstLogin", true)
@@ -55,7 +56,7 @@ function App() {
       <Alert />
 
       <Routes>
-        <Route path="/" element={token ? <Home /> : <Login />} />
+        <Route path="/" element={token ? <Home user={user} /> : <Login />} />
         <Route path="/register" element={<Register />} />
 
         <Route exact path='/' element={<PrivateRouter />}>

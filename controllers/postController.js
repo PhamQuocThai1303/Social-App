@@ -168,7 +168,7 @@ const getDiscoverPost = async (req, res) => {
 
     const newArr = [...foundUser.following, foundUser._id]
 
-    const posts = await Post.aggregate([
+    const posts = await Post.aggregate([ //group 
         { $match: { user: { $nin: newArr } } },//get user not found in newArr
         { $match: { images: { $ne: [] } } }, //get post that have images
         { $sample: { size: Number(12) } }, //get randomly some posts from user who in $match before
