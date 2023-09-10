@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment, AiOutlineShareAlt, AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { useLikePostMutation, useUnlikePostMutation } from "../../../redux/actions/postAction";
+import { useSavePostMutation, useUnsavePostMutation } from "../../../redux/actions/postAction";
 
 import CommentModal from "../comments/CommentModal";
 import LikeModal from "./LikeModal";
@@ -14,12 +15,15 @@ const CardFooter = ({ post }) => {
     const userId = user._id
 
     const [likePost] = useLikePostMutation()
+    const [unlikePost] = useUnlikePostMutation()
+    const [savePost] = useSavePostMutation()
+    const [unsavePost] = useUnsavePostMutation()
 
     const [likeModal, setLikeModal] = useState(false)
     const [cmtModal, setCmtModal] = useState(false)
     const [shareModal, setShareModal] = useState(false)
-    const [unlikePost] = useUnlikePostMutation()
     const [isLike, setIsLike] = useState(false)
+    const [saved, setSaved] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -50,6 +54,32 @@ const CardFooter = ({ post }) => {
         }
     }
 
+    useEffect(() => {
+        if (user.saved.find((save) => save === post._id)) {
+            setSaved(true)
+        }
+    }, [user.saved, userId, saved])
+
+    const handleSavePost = async (e) => {
+        e.preventDefault()
+        try {
+            await savePost({ post, user }).unwrap()
+            setSaved(true)
+        } catch (err) {
+            console.log(err.data.message);
+        }
+    }
+
+    const handleUnsavePost = async (e) => {
+        e.preventDefault()
+        try {
+            await unsavePost({ post, user }).unwrap()
+            setSaved(false)
+        } catch (err) {
+            console.log(err.data.message);
+        }
+    }
+
 
     return (
         <>
@@ -66,7 +96,10 @@ const CardFooter = ({ post }) => {
                         <AiOutlineShareAlt onClick={() => setShareModal(true)} />
                     </div>
                     <div className="cursor-pointer">
-                        <AiOutlineBook />
+                        {saved
+                            ? <AiFillBook className="text-yellow-300" onClick={(e) => handleUnsavePost(e)} />
+                            : <AiOutlineBook onClick={(e) => handleSavePost(e)} />
+                        }
                     </div>
                 </div>
                 <div className="flex justify-between px-6 text-2xl items-center">

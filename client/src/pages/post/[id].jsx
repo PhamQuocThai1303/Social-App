@@ -15,11 +15,14 @@ const Post = () => { //SinglePost
 
     useEffect(() => {
         if (posts) {
-            refetch()
             let newPost = posts?.filter((post) => post?._id == postId)
             setPost(newPost)
         }
     }, [postId, posts, data])
+
+    useEffect(() => {
+        refetch()
+    }, [postId])
 
 
     return (

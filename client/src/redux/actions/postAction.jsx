@@ -1,7 +1,8 @@
 import { apiSlice } from "../api/apiSlice"
 import { setError, setSuccess } from "../reducers/notifyReducer"
+import { saveUserPost, unsaveUserPost } from "../reducers/authReducer"
 import { createPost, getPost, updatePost, likePost, unlikePost, deletePost } from "../reducers/postReducer"
-import { getUserPosts, updateUserPost, likeUserPost, unlikeUserPost, deleteUserPost } from "../reducers/userReducer"
+import { getUserPosts, updateUserPost, likeUserPost, unlikeUserPost, deleteUserPost, savePost, unsavePost, getSavePosts } from "../reducers/userReducer"
 import { getDiscoverPost } from "../reducers/discoverReducer"
 import { getSinglePost, likeSinglePost, unlikeSinglePost, deleteSinglePost } from "../reducers/singlePostReducer"
 
@@ -163,6 +164,58 @@ export const postApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+
+        savePost: builder.mutation({
+            query: args => ({
+                url: '/savePost',
+                method: 'PATCH',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { post, user } = arg
+                    const { data } = await queryFulfilled
+                    dispatch(savePost({ post, user }))
+                    dispatch(saveUserPost({ post, user }))
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+                }
+            }
+        }),
+
+        unsavePost: builder.mutation({
+            query: args => ({
+                url: '/unsavePost',
+                method: 'PATCH',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { post, user } = arg
+                    const { data } = await queryFulfilled
+                    dispatch(unsavePost({ post, user }))
+                    dispatch(unsaveUserPost({ post, user }))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+
+        getSavePost: builder.query({
+            query: args => ({
+                url: `/getSavePost/${args.id}`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { savePostsLength, savePosts } = data
+                    dispatch(getSavePosts({ savePosts, savePostsLength }))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
     })
 })
 
@@ -176,4 +229,7 @@ export const {
     useGetSinglePostQuery,
     useGetDiscoverPostQuery,
     useDeletePostMutation,
+    useSavePostMutation,
+    useUnsavePostMutation,
+    useGetSavePostQuery
 } = postApiSlice 

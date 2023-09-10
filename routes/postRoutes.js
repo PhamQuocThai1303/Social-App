@@ -12,6 +12,9 @@ const {
     getSinglePost,
     getDiscoverPost,
     deletePost,
+    savePost,
+    unsavePost,
+    getSavePost,
 } = postController
 
 router.route('/post')
@@ -38,5 +41,14 @@ router.route('/discover/:id')
 
 router.route('/deletePost')
     .delete(deletePost)
+
+router.route('/savePost')
+    .patch(savePost)
+
+router.route('/unsavePost')
+    .patch(unsavePost)
+
+router.route('/getSavePost/:id')
+    .get(getSavePost)
 
 module.exports = router

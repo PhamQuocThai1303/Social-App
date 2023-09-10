@@ -199,6 +199,68 @@ const deletePost = async (req, res) => {
     })
 }
 
+// @desc savePost
+// @route PATCH /savePost
+// @access Public
+const savePost = async (req, res) => {
+    const { post, user } = req.body
+    const postId = post?._id
+    const userId = user?._id
+
+    const saved = await User.findOneAndUpdate({ _id: userId }, {
+        $push: { saved: postId }
+    }, { new: true })
+
+    if (!saved) return res.status(400).json({ message: 'This user does not exist!' })
+
+    res.json({ message: 'Post saved!' })
+}
+
+// @desc unsavePost
+// @route PATCH /unsavePost
+// @access Public
+const unsavePost = async (req, res) => {
+    const { post, user } = req.body
+    const postId = post?._id
+    const userId = user?._id
+
+    const unsaved = await User.findOneAndUpdate({ _id: userId }, {
+        $pull: { saved: postId }
+    }, { new: true })
+
+    if (!unsaved) return res.status(400).json({ message: 'This user does not exist!' })
+
+    res.json({ message: 'Post Unsaved!' })
+}
+
+// @desc getSavePost
+// @route GET /getSavePost/:id
+// @access Public
+const getSavePost = async (req, res) => {
+    const { id } = req.params
+
+    if (id) {
+        const foundUser = await User.findById(id).select('-password').exec()
+        const savePosts = await Post.find({
+            _id: { $in: foundUser.saved } //get all posts of authUser or posts of following people of authuser
+        })
+            .populate("user likes", "avatar username fullname")//path: user likes, select:avatar username fullname; apply user and likes with select
+            .populate({ //apply all user and likes to comment with select
+                path: "comments",
+                populate: {
+                    path: "user likes",
+                    select: "-password"
+                }
+            })
+
+        res.json({
+            message: "success",
+            savePostsLength: savePosts.length,
+            savePosts
+        })
+    }
+}
+
 
 module.exports = {
     createPost,
@@ -210,4 +272,7 @@ module.exports = {
     getSinglePost,
     getDiscoverPost,
     deletePost,
+    savePost,
+    unsavePost,
+    getSavePost,
 }

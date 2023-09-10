@@ -37,11 +37,27 @@ const authSlice = createSlice({
                 ...state,
                 user: newUser
             }
-        }
+        },
+        saveUserPost: (state, action) => {
+            const { post, user } = action.payload
+            const newUser = { ...user, saved: [...user.saved, post._id] }
+            return {
+                ...state,
+                user: newUser
+            }
+        },
+        unsaveUserPost: (state, action) => {
+            const { post, user } = action.payload
+            const newUser = { ...user, saved: user.saved.filter(id => id !== post._id) }
+            return {
+                ...state,
+                user: newUser
+            }
+        },
     }
 })
 
-export const { setCredentials, logOut, setLogin, followingUser, unFollowingUser } = authSlice.actions
+export const { setCredentials, logOut, setLogin, followingUser, unFollowingUser, saveUserPost, unsaveUserPost } = authSlice.actions
 
 export default authSlice.reducer
 
