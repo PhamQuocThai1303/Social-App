@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const notifySchema = new mongoose.Schema({
-    id: mongoose.Schema.Types.ObjectId,
+    postId: mongoose.Schema.Types.ObjectId,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -19,4 +19,4 @@ const notifySchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('notify', notifySchema)
+module.exports = mongoose.model('Notify', notifySchema)

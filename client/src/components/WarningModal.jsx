@@ -1,15 +1,28 @@
 import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
 import { useDeletePostMutation } from "../redux/actions/postAction"
+import { useDeleteNotifyMutation } from "../redux/actions/notifyAction";
 
 const WarningModal = ({ postId, userId, setIsWarning }) => {
+    const { user } = useSelector((state) => state.auth)
     const [deletePost] = useDeletePostMutation()
+    const [deleteNotify] = useDeleteNotifyMutation()
 
     const handleDeletePost = async (e) => {
         e.preventDefault()
         try {
             const { message } = await deletePost({ postId, userId }).unwrap()
-            window.location.reload() //reload web
             setIsWarning(false)
+
+            // Notify
+            const notify = {
+                postId: postId,
+                text: 'added a new post.',
+                recipients: user.followers,
+                url: `/post/${postId}`,
+            }
+
+            await deleteNotify({ notify }).unwrap()
             // return redirect("/"); //return homepage
         } catch (err) {
             toast.error(err.data.message)

@@ -61,9 +61,7 @@ const postSlice = createSlice({
             const { postId } = action.payload
             return {
                 ...state,
-                posts: state.posts.map((item) => {
-                    if (item._id != postId) return item
-                })
+                posts: state.posts.filter(item => item._id !== postId)
             }
         },
     }

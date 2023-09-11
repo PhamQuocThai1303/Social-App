@@ -9,6 +9,8 @@ const jwt = require('jsonwebtoken')
 const createPost = async (req, res) => {
     const { userId, content, images } = req.body
 
+    const foundUser = await User.findById(userId).select('-password').exec()
+
     const newPost = new Post({
         content, images, user: userId
     })
@@ -16,7 +18,10 @@ const createPost = async (req, res) => {
 
     res.json({
         message: 'Post created!',
-        newPost
+        newPost: {
+            ...newPost._doc,
+            user: foundUser
+        }
     })
 }
 

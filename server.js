@@ -38,6 +38,9 @@ app.use('/', require('./routes/postRoutes'))
 //comment
 app.use('/', require('./routes/commentRoutes'))
 
+//notify
+app.use('/', require('./routes/notifyRoutes'))
+
 
 //Routes
 

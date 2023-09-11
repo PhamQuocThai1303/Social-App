@@ -7,6 +7,7 @@ import Loading from './alert/Loading'
 
 import { toast } from 'react-toastify';
 
+import { useCreateNotifyMutation } from "../redux/actions/notifyAction";
 import { useCreatPostMutation } from "../redux/actions/postAction";
 import { useUpdatePostMutation } from "../redux/actions/postAction";
 
@@ -25,6 +26,7 @@ const StatusModal = ({ post, setIsEdit }) => {
     const dispatch = useDispatch()
     const [creatPost, { isLoading: loadingCreate }] = useCreatPostMutation()
     const [updatePost, { isLoading: loadingUpdate }] = useUpdatePostMutation()
+    const [createNotify] = useCreateNotifyMutation()
 
     const deleteImg = (index, e) => {
         e.preventDefault()
@@ -89,12 +91,24 @@ const StatusModal = ({ post, setIsEdit }) => {
                 media = await imageUpload(images)
             }
             const { message, newPost } = await creatPost({ userId: user?._id, content, images: media }).unwrap()
-
             dispatch(setStatus(false))
             setContent('')
             setImages([])
             if (tracks) tracks.stop
-            window.location.reload() //reload web de solve loi avatar chua dc load
+
+            // Notify
+            const notify = {
+                userId: user._id,
+                postId: newPost._id,
+                text: 'added a new post.',
+                recipients: newPost.user.followers,
+                url: `/post/${newPost._id}`,
+                content,
+                image: media[0].url
+            }
+            await createNotify({ notify }).unwrap()
+
+            // window.location.reload() //reload web de solve loi avatar chua dc load
             toast.success(message)
 
         } catch (error) {
