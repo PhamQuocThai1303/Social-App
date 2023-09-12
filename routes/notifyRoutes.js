@@ -8,6 +8,7 @@ const verifyJWT = require('../middleware/verifyJWT')
 const {
     createNotify,
     deleteNotify,
+    getNotify,
 } = notifyController
 
 router.route('/notify')
@@ -15,5 +16,8 @@ router.route('/notify')
 
 router.route('/notify')
     .delete(deleteNotify)
+
+router.route('/notify/:id')
+    .get(getNotify)
 
 module.exports = router

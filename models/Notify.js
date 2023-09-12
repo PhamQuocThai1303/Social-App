@@ -10,7 +10,6 @@ const notifySchema = new mongoose.Schema({
     url: String,
     text: String,
     content: String,
-    image: String,
     isRead: {
         type: Boolean,
         default: false

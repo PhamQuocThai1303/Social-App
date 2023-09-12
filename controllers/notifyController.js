@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken')
 // @route POST /notify
 // @access Public
 const createNotify = async (req, res) => {
-    const { userId, postId, recipients, url, text, content, image } = req.body.notify
+    const { userId, postId, recipients, url, text, content } = req.body.notify
     // if(recipients.includes(req.user._id.toString())) return;
 
     const notify = new Notify({
-        postId, recipients, url, text, content, image, user: userId
+        postId, recipients, url, text, content, user: userId
     })
 
     await notify.save()
@@ -31,9 +31,21 @@ const deleteNotify = async (req, res) => {
     return res.json({ notify })
 }
 
+// @desc getNotify
+// @route GET /notify/:id
+// @access Public
+const getNotify = async (req, res) => {
+
+    const notifies = await Notify.find({ recipients: req.params.id }) //userId
+        .sort('-createdAt').populate('user', 'avatar username')
+
+    return res.json({ notifies })
+}
+
 
 
 module.exports = {
     createNotify,
-    deleteNotify
+    deleteNotify,
+    getNotify,
 }

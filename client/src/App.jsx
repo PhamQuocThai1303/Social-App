@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { useRefreshMutation } from './redux/actions/authAction'
 import { useGetPostQuery } from './redux/actions/postAction'
+import { useLazyGetNotifyQuery } from './redux/actions/notifyAction'
 import { Navigate } from 'react-router-dom'
 
 import Register from './pages/register'
@@ -31,6 +32,7 @@ function App() {
   const firstLogin = localStorage.getItem("firstLogin")
 
   const { posts, isLoading } = useGetPostQuery({ id: user._id })
+  const [getNotify] = useLazyGetNotifyQuery({ id: user._id })
 
 
   useEffect(() => {
@@ -43,11 +45,16 @@ function App() {
   }, [token])
 
   useEffect(() => {
+    if (user._id) {
+      getNotify({ id: user._id })
+    }
+  }, [user._id, user])
+
+  useEffect(() => {
     if (firstLogin) {
       refresh()
     }
   }, [])
-
 
   return (
     <>

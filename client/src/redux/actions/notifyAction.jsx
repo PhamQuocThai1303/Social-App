@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice"
-import { setError, setSuccess } from "../reducers/notifyReducer"
+import { setError, setSuccess, getNotify } from "../reducers/notifyReducer"
 
 export const notifyApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -31,10 +31,26 @@ export const notifyApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+        getNotify: builder.query({
+            query: args => ({
+                url: `/notify/${args.id}`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { notifies } = data
+                    dispatch(getNotify({ notifies }))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
     })
 })
 
 export const {
     useCreateNotifyMutation,
     useDeleteNotifyMutation,
+    useLazyGetNotifyQuery,
 } = notifyApiSlice 

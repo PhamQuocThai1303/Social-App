@@ -104,7 +104,6 @@ const StatusModal = ({ post, setIsEdit }) => {
                 recipients: newPost.user.followers,
                 url: `/post/${newPost._id}`,
                 content,
-                image: media[0].url
             }
             await createNotify({ notify }).unwrap()
 

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+    data: [],
     loading: null,
     error: null,
     success: null,
@@ -21,10 +22,17 @@ const notifySlice = createSlice({
         setSuccess: (state, action) => {
             const success = action.payload
             state.success = success
+        },
+        getNotify: (state, action) => {
+            const { notifies } = action.payload
+            return {
+                ...state,
+                data: notifies
+            };
         }
     }
 })
 
-export const { setLoading, setError, setSuccess } = notifySlice.actions
+export const { setLoading, setError, setSuccess, getNotify } = notifySlice.actions
 
 export default notifySlice.reducer
