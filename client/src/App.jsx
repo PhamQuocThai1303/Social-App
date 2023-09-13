@@ -5,6 +5,8 @@ import { useRefreshMutation } from './redux/actions/authAction'
 import { useGetPostQuery } from './redux/actions/postAction'
 import { useLazyGetNotifyQuery } from './redux/actions/notifyAction'
 import { Navigate } from 'react-router-dom'
+import { setSocket } from './redux/reducers/socketReducer'
+import { io } from 'socket.io-client'
 
 import Register from './pages/register'
 import Login from './pages/login'
@@ -19,6 +21,7 @@ import Profile from './pages/profile/[id]'
 import Post from './pages/post/[id]'
 import StatusModal from './components/StatusModal'
 import Loading from './components/alert/Loading'
+import SocketClient from './SocketClient'
 
 import PrivateRouter from './redux/actions/PrivateRouter'
 import Alert from './components/alert/Alert'
@@ -53,6 +56,10 @@ function App() {
   useEffect(() => {
     if (firstLogin) {
       refresh()
+      const socket = io("http://localhost:3500");
+      // console.log(socket);
+      dispatch(setSocket({ socket }))
+      return () => socket.close()
     }
   }, [])
 
@@ -60,6 +67,7 @@ function App() {
     <>
       {token && <Header />}
       {status && <StatusModal />}
+      {token && <SocketClient />}
       <Alert />
 
       <Routes>

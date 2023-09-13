@@ -12,6 +12,7 @@ import { BASE_URL } from '../../../utils/config'
 
 const CardFooter = ({ post }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
     const userId = user._id
 
     const [likePost] = useLikePostMutation()
@@ -38,6 +39,11 @@ const CardFooter = ({ post }) => {
         e.preventDefault()
         try {
             await likePost({ post, user }).unwrap()
+
+            //socket
+            const newPost = { ...post, likes: [...post.likes, user] }
+            socket.emit('likePost', newPost)
+
             setIsLike(true)
         } catch (err) {
             console.log(err.data.message);

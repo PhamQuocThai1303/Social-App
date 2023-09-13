@@ -9,7 +9,7 @@ const NotifyModal = () => {
 
     return (
         <div className="flex flex-col">
-            <div className="p-2">
+            <div className="p-4">
                 <div className="text-2xl pb-2">Notification</div>
                 {data.length > 0 &&
                     <div className="flex gap-2">
@@ -22,7 +22,7 @@ const NotifyModal = () => {
                 data.length === 0 &&
                 <div className="text-3xl p-2 border-t-2">You have no notify!</div>
             }
-            <div className="overflow-y-scroll max-h-[500px] w-full">
+            <div className="overflow-y-scroll max-h-[500px] w-full rounded-lg ">
                 {
                     data?.map((item, index) => (
                         <Link key={index} to={`${item.url}`} className="flex p-2 border-2 items-center min-h-[90px]">

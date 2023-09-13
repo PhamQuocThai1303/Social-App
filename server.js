@@ -9,23 +9,33 @@ const cors = require('cors')
 const corsOption = require('./config/corsOption')
 const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
+const socketServer = require('./socketServer')
+
+//socket
+const { createServer } = require('http');
+const server = createServer(app);
+const { Server } = require('socket.io');
+
+//socket
+const io = new Server(server, { cors: { origin: '*' } });
+io.on('connection', (socket) => {
+    socketServer(socket)
+});
 
 const PORT = process.env.PORT || 3500
-
 connectDB()
 
+
 app.use(logger)
-
 app.use(cors(corsOption))
-
 app.use(express.json())
-
 app.use(cookieParser())
 
 app.use('/', express.static(path.join(__dirname, 'public'))) //static
 
 app.use('/', require('./routes/root')) //root
 
+//routes
 // auth
 app.use('/auth', require('./routes/authRoutes'))
 
@@ -61,8 +71,7 @@ app.use(errorHandler)
 
 mongoose.connection.once('open', () => {
     console.log("connected to MongoDB");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 })
 
 mongoose.connection.on('error', err => {
