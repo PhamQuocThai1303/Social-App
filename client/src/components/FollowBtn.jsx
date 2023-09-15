@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { useFollowMutation, useUnfollowMutation } from '../redux/actions/userAction';
+import { useCreateNotifyMutation, useDeleteNotifyMutation } from '../redux/actions/notifyAction';
 
 const FollowBtn = ({ user }) => {
     const [followed, setFollowed] = useState()
     const { user: authUser, token } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
 
     const id = user._id
 
     const [follow] = useFollowMutation()
     const [unfollow] = useUnfollowMutation()
+    const [createNotify] = useCreateNotifyMutation()
+    const [deleteNotify] = useDeleteNotifyMutation()
 
     const dispatch = useDispatch()
 
@@ -27,6 +31,26 @@ const FollowBtn = ({ user }) => {
         setFollowed(true)
         await follow({ id, user, authUser })
 
+        //socket
+        const newUser = { ...user, followers: [...user.followers, authUser] }
+        socket.emit('follow', newUser)
+
+        // Notify
+        const notify = {
+            userId: authUser._id,
+            text: 'just followed you.',
+            recipients: [newUser._id],
+            url: `/profile/${authUser._id}`,
+        }
+        const { notify: resNoti } = await createNotify({ notify }).unwrap()
+        //socket
+        socket.emit('createNotify', {
+            ...resNoti,
+            user: {
+                username: authUser.username,
+                avatar: authUser.avatar
+            }
+        })
     }
 
     const handleUnFollow = async () => {
@@ -34,6 +58,26 @@ const FollowBtn = ({ user }) => {
         setFollowed(false)
         await unfollow({ id, user, authUser })
 
+        //socket
+        const newUser = { ...user, followers: user.followers.filter(item => item._id !== authUser._id) }
+        socket.emit('unfollow', newUser)
+
+        // Notify
+        const notify = {
+            userId: authUser._id,
+            text: 'just followed you.',
+            recipients: [newUser._id],
+            url: `/profile/${authUser._id}`,
+        }
+        const { notify: resNoti } = await deleteNotify({ notify }).unwrap()
+        //socket
+        socket.emit('deleteNotify', {
+            ...resNoti,
+            user: {
+                username: authUser.username,
+                avatar: authUser.avatar
+            }
+        })
     }
 
 

@@ -9,6 +9,7 @@ import { useDeleteCommentMutation } from '../../../redux/actions/commentAction';
 import { updatePost } from '../../../redux/reducers/postReducer';
 import { updateUserPost } from '../../../redux/reducers/userReducer';
 import { updateSinglePost } from '../../../redux/reducers/singlePostReducer';
+import { useDeleteNotifyMutation } from '../../../redux/actions/notifyAction';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -16,9 +17,11 @@ function classNames(...classes) {
 
 const CommentSetting = ({ post, comment }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
 
     const dispatch = useDispatch()
     const [deleteComment] = useDeleteCommentMutation()
+    const [deleteNotify] = useDeleteNotifyMutation()
 
     const handleDelete = async (e) => {
         e.preventDefault()
@@ -33,10 +36,32 @@ const CommentSetting = ({ post, comment }) => {
         dispatch(updateUserPost({ newPost }))
         dispatch(updateSinglePost({ newPost }))
 
+        //socket
+        socket.emit('deleteComment', newPost)
+
         try {
             deleteReplyArr.forEach(async (cmt) => { //delete het cmt trong deleteReplyCmt
                 await deleteComment({ cmtId: cmt._id, userId: cmt.user }).unwrap()
+
+                //Notify
+                const notify = {
+                    cmtId: cmt._id,
+                    text: comment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+                    recipients: comment.reply ? [comment.tag._id] : [post.user._id],
+                    url: `/post/${post._id}`,
+                }
+                const { notify: resNoti } = await deleteNotify({ notify }).unwrap()
+                //socket
+                socket.emit('deleteNotify', {
+                    ...resNoti,
+                    user: {
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                })
             })
+
+
             toast.success("Comment Deleted!")
         } catch (err) {
             console.log(err);

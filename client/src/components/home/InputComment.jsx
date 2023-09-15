@@ -6,13 +6,17 @@ import { updatePost } from '../../redux/reducers/postReducer';
 import { updateUserPost } from '../../redux/reducers/userReducer';
 import { useCreateCommentMutation } from '../../redux/actions/commentAction';
 import { updateSinglePost } from '../../redux/reducers/singlePostReducer';
+import { useCreateNotifyMutation } from '../../redux/actions/notifyAction';
 
 import { toast } from 'react-toastify';
 
 const InputComment = ({ children, post, onReply, setOnReply }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
+
     const [content, setContent] = useState('')
     const [createComment] = useCreateCommentMutation()
+    const [createNotify] = useCreateNotifyMutation()
 
     const dispatch = useDispatch()
 
@@ -38,13 +42,35 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
 
         try {
             const { newComment: res } = await createComment({ ...newComment, postId: post?._id, postUserId: post?.user?._id, userId: user?._id }).unwrap()
-            const newData = { ...res, user: user }
+            const newData = { ...res, user: user } //newComment
             const newPost = { ...post, comments: [...post.comments, newData] }
             dispatch(updatePost({ newPost }))
             dispatch(updateUserPost({ newPost }))
             dispatch(updateSinglePost({ newPost }))
+
+            //socket 
+            socket.emit('createComment', newPost)
+
+            // Notify
+            const notify = {
+                cmtId: res._id,
+                text: newComment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+                recipients: newComment.reply ? [newComment.tag._id] : [post.user._id],
+                url: `/post/${post._id}`,
+                content: post.content,
+            }
+            const { notify: resNoti } = await createNotify({ notify }).unwrap()
+            //socket
+            socket.emit('createNotify', {
+                ...resNoti,
+                user: {
+                    username: user.username,
+                    avatar: user.avatar
+                }
+            })
+
         } catch (error) {
-            toast.error(error.data.message)
+            console.log(error);
         }
 
 

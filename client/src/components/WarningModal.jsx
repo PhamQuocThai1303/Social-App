@@ -5,6 +5,8 @@ import { useDeleteNotifyMutation } from "../redux/actions/notifyAction";
 
 const WarningModal = ({ postId, userId, setIsWarning }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
+
     const [deletePost] = useDeletePostMutation()
     const [deleteNotify] = useDeleteNotifyMutation()
 
@@ -22,7 +24,17 @@ const WarningModal = ({ postId, userId, setIsWarning }) => {
                 url: `/post/${postId}`,
             }
 
-            await deleteNotify({ notify }).unwrap()
+            const { notify: res } = await deleteNotify({ notify }).unwrap()
+
+            //socket
+            socket.emit('deleteNotify', {
+                ...res,
+                user: {
+                    username: user.username,
+                    avatar: user.avatar
+                }
+            })
+
             // return redirect("/"); //return homepage
         } catch (err) {
             toast.error(err.data.message)

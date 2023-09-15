@@ -14,6 +14,7 @@ import { useUpdatePostMutation } from "../redux/actions/postAction";
 
 const StatusModal = ({ post, setIsEdit }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
 
     const [images, setImages] = useState([])
     const [content, setContent] = useState('')
@@ -96,7 +97,7 @@ const StatusModal = ({ post, setIsEdit }) => {
             setImages([])
             if (tracks) tracks.stop
 
-            // Notify
+            // Notify 
             const notify = {
                 userId: user._id,
                 postId: newPost._id,
@@ -105,7 +106,16 @@ const StatusModal = ({ post, setIsEdit }) => {
                 url: `/post/${newPost._id}`,
                 content,
             }
-            await createNotify({ notify }).unwrap()
+            const { notify: res } = await createNotify({ notify }).unwrap()
+
+            //socket
+            socket.emit('createNotify', {
+                ...res,
+                user: {
+                    username: user.username,
+                    avatar: user.avatar
+                }
+            })
 
             // window.location.reload() //reload web de solve loi avatar chua dc load
             toast.success(message)

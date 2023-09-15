@@ -1,7 +1,9 @@
 import { apiSlice } from "../api/apiSlice"
-import { setError, setSuccess, getNotify } from "../reducers/notifyReducer"
+import { setError, setSuccess, getNotify, createNotify, deleteNotify } from "../reducers/notifyReducer"
+
 
 export const notifyApiSlice = apiSlice.injectEndpoints({
+
     endpoints: builder => ({
         createNotify: builder.mutation({
             query: args => ({
@@ -12,6 +14,8 @@ export const notifyApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
+                    const { notify } = data
+                    // dispatch(createNotify({ notify }))
                 } catch (err) {
                     console.log(err);
                 }
@@ -26,6 +30,8 @@ export const notifyApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
+                    const { notify } = data
+                    dispatch(deleteNotify({ notify }))
                 } catch (err) {
                     console.log(err);
                 }

@@ -8,11 +8,10 @@ const jwt = require('jsonwebtoken')
 // @route POST /notify
 // @access Public
 const createNotify = async (req, res) => {
-    const { userId, postId, recipients, url, text, content } = req.body.notify
-    // if(recipients.includes(req.user._id.toString())) return;
+    const { userId, postId, cmtId, recipients, url, text, content } = req.body.notify
 
     const notify = new Notify({
-        postId, recipients, url, text, content, user: userId
+        postId, recipients, url, text, content, user: userId, cmtId
     })
 
     await notify.save()

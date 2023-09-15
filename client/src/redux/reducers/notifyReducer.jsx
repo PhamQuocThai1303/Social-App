@@ -29,10 +29,26 @@ const notifySlice = createSlice({
                 ...state,
                 data: notifies
             };
+        },
+        createNotify: (state, action) => {
+            const { notify } = action.payload
+            return {
+                ...state,
+                data: [notify, ...state.data]
+            };
+        },
+        deleteNotify: (state, action) => {
+            const { notify } = action.payload
+            return {
+                ...state,
+                data: state.data.filter(item => (
+                    item.id !== notify.id || item.url !== notify.url
+                ))
+            };
         }
     }
 })
 
-export const { setLoading, setError, setSuccess, getNotify } = notifySlice.actions
+export const { setLoading, setError, setSuccess, getNotify, createNotify, deleteNotify } = notifySlice.actions
 
 export default notifySlice.reducer

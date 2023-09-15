@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AiOutlineHeart, AiFillHeart, AiOutlineComment, AiOutlineShareAlt, AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { useLikePostMutation, useUnlikePostMutation } from "../../../redux/actions/postAction";
 import { useSavePostMutation, useUnsavePostMutation } from "../../../redux/actions/postAction";
+import { useCreateNotifyMutation, useDeleteNotifyMutation } from "../../../redux/actions/notifyAction";
 
 import CommentModal from "../comments/CommentModal";
 import LikeModal from "./LikeModal";
@@ -13,12 +14,17 @@ import { BASE_URL } from '../../../utils/config'
 const CardFooter = ({ post }) => {
     const { user } = useSelector((state) => state.auth)
     const { socket } = useSelector((state) => state.socket)
+
     const userId = user._id
 
     const [likePost] = useLikePostMutation()
     const [unlikePost] = useUnlikePostMutation()
     const [savePost] = useSavePostMutation()
     const [unsavePost] = useUnsavePostMutation()
+
+    const [createNotify] = useCreateNotifyMutation()
+    const [deleteNotify] = useDeleteNotifyMutation()
+
 
     const [likeModal, setLikeModal] = useState(false)
     const [cmtModal, setCmtModal] = useState(false)
@@ -42,11 +48,31 @@ const CardFooter = ({ post }) => {
 
             //socket
             const newPost = { ...post, likes: [...post.likes, user] }
-            socket.emit('likePost', newPost)
+            socket.emit('likePost', newPost) //handle likePost event on socket event 
+
+            //Notify
+            const notify = {
+                userId: user._id,
+                postId: post._id,
+                text: 'like your post.',
+                recipients: [post.user._id],
+                url: `/post/${post._id}`,
+                content: post.content,
+            }
+            const { notify: res } = await createNotify({ notify }).unwrap()
+
+            //socket
+            socket.emit('createNotify', { //create notify
+                ...res,
+                user: {
+                    username: user.username,
+                    avatar: user.avatar
+                }
+            })
 
             setIsLike(true)
         } catch (err) {
-            console.log(err.data.message);
+            console.log(err);
         }
     }
 
@@ -54,6 +80,29 @@ const CardFooter = ({ post }) => {
         e.preventDefault()
         try {
             await unlikePost({ post, user }).unwrap()
+
+            //socket
+            const newPost = { ...post, likes: post.likes.filter(item => item._id !== user._id) }
+            socket.emit('unLikePost', newPost)//handle unlikePost event on socket event
+
+            // Notify
+            const notify = {
+                postId: post._id,
+                recipients: user.followers,
+                url: `/post/${post._id}`,
+            }
+
+            const { notify: res } = await deleteNotify({ notify }).unwrap()
+
+            //socket
+            socket.emit('deleteNotify', {//deleteNotify
+                ...res,
+                user: {
+                    username: user.username,
+                    avatar: user.avatar
+                }
+            })
+
             setIsLike(false)
         } catch (err) {
             console.log(err.data.message);
