@@ -53,6 +53,7 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
 
             // Notify
             const notify = {
+                userId: user._id,
                 cmtId: res._id,
                 text: newComment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
                 recipients: newComment.reply ? [newComment.tag._id] : [post.user._id],

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLogoutMutation } from '../../redux/actions/authAction'
@@ -29,6 +29,8 @@ const Header = () => {
     const { user, token } = useSelector((state) => state.auth)
     const { data } = useSelector((state) => state.notify)
 
+    const [notRead, setNotRead] = useState([])
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { pathname } = useLocation()
@@ -37,6 +39,13 @@ const Header = () => {
     const isCurrent = (pn) => {
         if (pn === pathname) return true
     }
+
+    // useEffect(() => {
+    //     if (data) {
+    //         const arr = data.filter(item => item.isRead == false);
+    //         setNotRead(arr)
+    //     }
+    // }, [data])
 
     const handleLogout = async () => {
         try {

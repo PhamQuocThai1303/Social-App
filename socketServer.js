@@ -60,21 +60,13 @@ const socketServer = (socket) => {
     //Follow
     socket.on('follow', newUser => {
         const user = users.find(user => user.id === newUser._id) //find user who recently have followed
-        if (user.length > 0) { //if user exist, send event 'followToClient' to each client
-            user.forEach(client => {
-                socket.to(`${client.socketId}`).emit('followToClient', newUser) //socket.to -> send event to a socket
-            })
-        }
+        user && socket.to(`${user.socketId}`).emit('followToClient', newUser)
     })
 
     //unFollow
     socket.on('unfollow', newUser => {
         const user = users.find(user => user.id === newUser._id) //find user who recently have unfollowed
-        if (user.length > 0) { //if user exist, send event 'unFollowToClient' to each client
-            user.forEach(client => {
-                socket.to(`${client.socketId}`).emit('unFollowToClient', newUser) //socket.to -> send event to a socket
-            })
-        }
+        user && socket.to(`${user.socketId}`).emit('unFollowToClient', newUser)
     })
 
     //create Notification
@@ -85,8 +77,10 @@ const socketServer = (socket) => {
 
     //delete Notification
     socket.on('deleteNotify', arg => {
+        if (!arg.recipients) return;
         const client = users.find(user => arg.recipients.includes(user.id)) //find user of users who in client following
-        client && socket.to(`${client.socketId}`).emit('deleteNotifyToClient', arg)
+        if (client) socket.to(`${client.socketId}`).emit('deleteNotifyToClient', arg)
+        else return;
     })
 
 }

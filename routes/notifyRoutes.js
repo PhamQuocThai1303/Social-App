@@ -9,6 +9,9 @@ const {
     createNotify,
     deleteNotify,
     getNotify,
+    isReadNotify,
+    readAllNotify,
+    deleteAllNotify
 } = notifyController
 
 router.route('/notify')
@@ -19,5 +22,14 @@ router.route('/notify')
 
 router.route('/notify/:id')
     .get(getNotify)
+
+router.route('/isReadNotify/:id')
+    .patch(isReadNotify)
+
+router.route('/readAllNotify')
+    .patch(readAllNotify)
+
+router.route('/deleteAllNotify')
+    .delete(deleteAllNotify)
 
 module.exports = router

@@ -45,10 +45,44 @@ const notifySlice = createSlice({
                     item.id !== notify.id || item.url !== notify.url
                 ))
             };
-        }
+        },
+        isReadNotify: (state, action) => {
+            const { notify } = action.payload
+            const newNoti = state.data.map((item) => {
+                if (item._id === notify._id) {
+                    item = { ...notify }
+                }
+                return item
+            })
+            return {
+                ...state,
+                data: [...newNoti]
+            };
+        },
+        readAllNotify: (state, action) => {
+            const newNoti = state.data.map((item) => {
+                if (item.isRead === false) {
+                    const newItem = { ...item }
+                    newItem.isRead = true
+                    return newItem
+                }
+                return item
+            })
+
+            return {
+                ...state,
+                data: [...newNoti]
+            };
+        },
+        deleteAllNotify: (state, action) => {
+            return {
+                ...state,
+                data: []
+            };
+        },
     }
 })
 
-export const { setLoading, setError, setSuccess, getNotify, createNotify, deleteNotify } = notifySlice.actions
+export const { setLoading, setError, setSuccess, getNotify, createNotify, deleteNotify, isReadNotify, readAllNotify, deleteAllNotify } = notifySlice.actions
 
 export default notifySlice.reducer

@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice"
-import { setError, setSuccess, getNotify, createNotify, deleteNotify } from "../reducers/notifyReducer"
+import { setError, setSuccess, getNotify, createNotify, deleteNotify, isReadNotify, readAllNotify, deleteAllNotify } from "../reducers/notifyReducer"
 
 
 export const notifyApiSlice = apiSlice.injectEndpoints({
@@ -52,6 +52,54 @@ export const notifyApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+        isReadNotify: builder.mutation({
+            query: args => ({
+                url: `/isReadNotify/${args.id}`,
+                method: 'PATCH',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { notify } = data
+                    dispatch(isReadNotify({ notify }))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+        readAllNotify: builder.mutation({
+            query: args => ({
+                url: `/readAllNotify`,
+                method: 'PATCH',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { notifies } = data
+                    dispatch(readAllNotify())
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+        deleteAllNotify: builder.mutation({
+            query: args => ({
+                url: `/deleteAllNotify`,
+                method: 'DELETE',
+                body: { ...args }
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { notifies } = data
+                    dispatch(deleteAllNotify())
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
     })
 })
 
@@ -59,4 +107,8 @@ export const {
     useCreateNotifyMutation,
     useDeleteNotifyMutation,
     useLazyGetNotifyQuery,
+    useIsReadNotifyMutation,
+    useReadAllNotifyMutation,
+    useDeleteAllNotifyMutation
+
 } = notifyApiSlice 
