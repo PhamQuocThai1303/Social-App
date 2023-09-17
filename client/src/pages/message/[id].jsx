@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import LeftSide from '../../components/message/LeftSide'
+import React from "react"
+import LeftSide from "../../components/message/LeftSide"
+import RightSide from '../../components/message/RightSide'
 
-const Message = () => {
-    const { user } = useSelector((state) => state.auth)
-
+const Conversation = () => {
     return (
         <div className="grid mx-2 grid-cols-12 sm:py-4 ">
             <div className="grid-cols-12 col-start-1 col-span-12 sm:col-start-3 sm:col-span-8 grid sm:grid-cols-12 border-2 h-[calc(100vh_/_1.15)]">
@@ -13,12 +11,14 @@ const Message = () => {
                         <LeftSide />
                     }
                 </div>
-                <div className='col-span-9 sm:col-span-8'>
-
+                <div className='col-span-9 sm:col-span-8 '>
+                    {
+                        <RightSide />
+                    }
                 </div>
             </div>
         </div>
     )
 }
 
-export default Message
+export default Conversation

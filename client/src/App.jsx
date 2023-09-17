@@ -19,6 +19,7 @@ import Message from './pages/message/message'
 import Discover from './pages/discover'
 import Profile from './pages/profile/[id]'
 import Post from './pages/post/[id]'
+import Conversation from './pages/message/[id]'
 import StatusModal from './components/StatusModal'
 import Loading from './components/alert/Loading'
 import SocketClient from './SocketClient'
@@ -85,6 +86,10 @@ function App() {
           <Route
             path="/post/:postId"
             element={<Post />}
+          />
+          <Route
+            path="/message/:userId"
+            element={<Conversation />}
           />
           <Route path="*" element={<NotFound />} />
 

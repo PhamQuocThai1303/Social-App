@@ -55,7 +55,7 @@ const login = async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    const foundUser = await User.findOne({ email }).exec()
+    const foundUser = await User.findOne({ email }).populate('followers following', 'avatar username fullname').exec()
 
     if (!foundUser) {
         return res.status(401).json({ message: 'Invalid user' })
@@ -109,7 +109,7 @@ const refresh = async (req, res) => {
         async (err, decoded) => {
             if (err) return res.status(403).json({ message: 'Forbidden' })
 
-            const foundUser = await User.findOne({ username: decoded.username }).select('-password').exec()
+            const foundUser = await User.findOne({ username: decoded.username }).select('-password').populate('followers following', 'avatar username fullname').exec()
 
             if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
             const accessToken = jwt.sign(

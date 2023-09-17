@@ -40,13 +40,6 @@ const Header = () => {
         if (pn === pathname) return true
     }
 
-    // useEffect(() => {
-    //     if (data) {
-    //         const arr = data.filter(item => item.isRead == false);
-    //         setNotRead(arr)
-    //     }
-    // }, [data])
-
     const handleLogout = async () => {
         try {
             await logout().unwrap()
