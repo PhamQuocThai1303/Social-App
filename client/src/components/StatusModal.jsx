@@ -4,6 +4,7 @@ import { TfiCamera, TfiGallery, TfiClose } from "react-icons/tfi";
 import { checkImage, imageUpload } from "../utils/uploadImage";
 import { useState, useRef, useEffect } from "react";
 import Loading from './alert/Loading'
+import Icons from "./Icons";
 
 import { toast } from 'react-toastify';
 
@@ -255,6 +256,8 @@ const StatusModal = ({ post, setIsEdit }) => {
                                             {setIsEdit ? 'Update' : 'Post'}
                                         </button>
                                         <div className="flex pl-0 space-x-1 sm:pl-2">
+                                            <Icons content={content} setContent={setContent} />
+
                                             <label type="button" className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl " onClick={handleStream}>
                                                 <TfiCamera />
                                                 <span className="sr-only">Upload camera</span>
