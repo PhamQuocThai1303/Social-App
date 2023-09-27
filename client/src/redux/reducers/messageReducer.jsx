@@ -19,9 +19,21 @@ const messageSlice = createSlice({
             }
             return state;
         },
+
+        addMessage: (state, action) => {
+            return {
+                ...state,
+                data: [...state.data, action.payload],
+                users: state.users.map(user =>
+                    user._id === action.payload.recipient || user._id === action.payload.sender
+                        ? { ...user, text: action.payload.text, images: action.payload.images }
+                        : user
+                )
+            };
+        },
     }
 })
 
-export const { addUser } = messageSlice.actions
+export const { addUser, addMessage } = messageSlice.actions
 
 export default messageSlice.reducer
