@@ -123,7 +123,7 @@ const RightSide = () => {
             }
 
             {/* message */}
-            <div className="grow w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch ">
+            <div className="grow flex flex-col w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch items-end">
                 {
                     imgLoading &&
                     <div className="inline-block bg-white ">

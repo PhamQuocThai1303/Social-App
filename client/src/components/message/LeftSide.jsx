@@ -27,7 +27,7 @@ const LeftSide = () => {
                         {
                             users.map((item) => (
                                 <Link key={item._id} className="relative" to={`/message/${item._id}`}>
-                                    <UserCard user={item} />
+                                    <UserCard user={item} msg={true} />
                                     <div className="absolute rounded-full bg-blue-600 w-4 h-4 ml-4 col-span-1 right-0 top-0 mt-2 mr-2" />
                                 </Link>
                             ))
