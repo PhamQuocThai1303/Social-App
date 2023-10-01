@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { createNotify, deleteNotify } from "./redux/reducers/notifyReducer"
+import { addMessage } from "./redux/reducers/messageReducer"
 
 const SocketClient = () => {
     const { user } = useSelector((state) => state.auth)
@@ -85,6 +86,14 @@ const SocketClient = () => {
         return () => socket.off('deleteNotifyToClient') //cancel an event on socket
 
     }, [socket])
+
+    //add message
+    useEffect(() => {
+        socket.on('addMessageToClient', message => {
+            dispatch(addMessage(message))
+        })
+        return () => socket.off('addMessageToClient') //cancel an event on socket
+    })
 
     return (
         <></>

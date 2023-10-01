@@ -51,6 +51,9 @@ app.use('/', require('./routes/commentRoutes'))
 //notify
 app.use('/', require('./routes/notifyRoutes'))
 
+//message
+app.use('/', require('./routes/messageRoutes'))
+
 
 //Routes
 

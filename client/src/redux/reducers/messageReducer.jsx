@@ -31,9 +31,23 @@ const messageSlice = createSlice({
                 )
             };
         },
+
+        getConversations: (state, action) => {
+            return {
+                ...state,
+                users: action.payload
+            }
+        },
+
+        getMessage: (state, action) => {
+            return {
+                ...state,
+                data: [...action.payload]
+            }
+        }
     }
 })
 
-export const { addUser, addMessage } = messageSlice.actions
+export const { addUser, addMessage, getConversations, getMessage } = messageSlice.actions
 
 export default messageSlice.reducer

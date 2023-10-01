@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import UserCard from "../UserCard"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
@@ -12,9 +12,8 @@ import { AiOutlineSend } from "react-icons/ai";
 import Icons from "../Icons"
 import Loading from "../alert/Loading"
 
-// import { useAddMessageMutation } from "../../redux/actions/messageAction"
-import { addMessage } from "../../redux/reducers/messageReducer"
-import { setLoading } from "../../redux/reducers/notifyReducer"
+import { useCreateMessageMutation, useGetMessageMutation } from "../../redux/actions/messageAction"
+
 
 const RightSide = () => {
     const { user } = useSelector((state) => state.auth)
@@ -22,7 +21,9 @@ const RightSide = () => {
     const { socket } = useSelector((state) => state.socket)
 
     const dispatch = useDispatch()
-    // const [addMessage, isLoading] = useAddMessageMutation()
+    const refDisplay = useRef()
+    const [createMessage] = useCreateMessageMutation()
+    const [getMessage] = useGetMessageMutation()
 
     const { userId } = useParams()
     const [curUser, setCurUser] = useState([])
@@ -83,7 +84,9 @@ const RightSide = () => {
                 createdAt: new Date().toISOString()
             }
             setImgLoading(false)
-            dispatch(addMessage(message))
+            await createMessage({ message }).unwrap()
+
+            socket.emit('addMessage', message)
             // // Notify 
             // const notify = {
             //     userId: user._id,
@@ -104,11 +107,28 @@ const RightSide = () => {
             //     }
             // })
 
+            if (refDisplay.current) {
+                refDisplay.current.scrollTo(0, refDisplay.current.scrollHeight)
+            }
 
         } catch (error) {
             console.log(error);
         }
     }
+
+    //get message
+    useEffect(() => {
+        const getMessagesData = async () => {
+            if (data.every(item => item._id !== userId) && user._id) {
+                await getMessage({ authId: user?._id, id: userId }).unwrap()
+                if (refDisplay.current) {
+                    refDisplay.current.scrollTo(0, refDisplay.current.scrollHeight)
+                }
+            }
+        }
+        getMessagesData()
+    }, [userId, user])
+
 
 
     return (
@@ -123,36 +143,39 @@ const RightSide = () => {
             }
 
             {/* message */}
-            <div className="grow flex flex-col w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch items-end">
-                {
-                    imgLoading &&
-                    <div className="inline-block bg-white ">
-                        <div className="flex justify-center items-center h-full">
-                            <img className="h-16 w-16" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+            <div className="grow flex flex-col w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto ">
+                <div className="overflow-y-scroll max-h-[500px]" ref={refDisplay}
+                    style={{ scrollBehavior: "smooth" }}>
+                    {
+                        imgLoading &&
+                        <div className="inline-block bg-white ">
+                            <div className="flex justify-center items-center h-full">
+                                <img className="h-16 w-16" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+                            </div>
                         </div>
-                    </div>
 
-                }
-                {
-                    data?.map((msg, index) => (
-                        <div key={index}>
-                            {
-                                msg.sender !== user._id &&
-                                <div className="my-4">
-                                    <MessageDisplay user={curUser} isAuth={false} msg={msg} />
-                                </div>
-                            }
+                    }
+                    {
+                        data?.map((msg, index) => (
+                            <div key={index}>
+                                {
+                                    msg.sender !== user._id &&
+                                    <div className="my-4">
+                                        <MessageDisplay user={curUser} isAuth={false} msg={msg} />
+                                    </div>
+                                }
 
-                            {
-                                msg.sender === user._id &&
-                                <div className="my-2">
-                                    <MessageDisplay user={user} isAuth={true} msg={msg} />
-                                </div>
-                            }
-                        </div>
-                    ))
-                }
+                                {
+                                    msg.sender === user._id &&
+                                    <div className="my-2">
+                                        <MessageDisplay user={user} isAuth={true} msg={msg} />
+                                    </div>
+                                }
+                            </div>
+                        ))
 
+                    }
+                </div>
             </div>
 
             {/* show Image */}
