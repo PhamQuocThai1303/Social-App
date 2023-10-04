@@ -49,27 +49,29 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
             dispatch(updateUserPost({ newPost }))
             dispatch(updateSinglePost({ newPost }))
 
-            //socket 
-            socket.emit('createComment', newPost)
+            if (post.user._id !== user._id) {//dont send noti to authUser
+                //socket 
+                socket.emit('createComment', newPost)
 
-            // Notify
-            const notify = {
-                userId: user._id,
-                cmtId: res._id,
-                text: newComment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
-                recipients: newComment.reply ? [newComment.tag._id] : [post.user._id],
-                url: `/post/${post._id}`,
-                content: post.content,
-            }
-            const { notify: resNoti } = await createNotify({ notify }).unwrap()
-            //socket
-            socket.emit('createNotify', {
-                ...resNoti,
-                user: {
-                    username: user.username,
-                    avatar: user.avatar
+                // Notify
+                const notify = {
+                    userId: user._id,
+                    cmtId: res._id,
+                    text: newComment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+                    recipients: newComment.reply ? [newComment.tag._id] : [post.user._id],
+                    url: `/post/${post._id}`,
+                    content: post.content,
                 }
-            })
+                const { notify: resNoti } = await createNotify({ notify }).unwrap()
+                //socket
+                socket.emit('createNotify', {
+                    ...resNoti,
+                    user: {
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                })
+            }
 
         } catch (error) {
             console.log(error);

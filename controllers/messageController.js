@@ -11,6 +11,7 @@ const createMessage = async (req, res) => {
 
     if (!recipient || (!text.trim() && images.length === 0 && !call)) return;
 
+    //update or create a conversation
     const newConversation = await Conversation.findOneAndUpdate({
         $or: [
             { recipients: [sender, recipient] },
@@ -19,8 +20,9 @@ const createMessage = async (req, res) => {
     }, {
         recipients: [sender, recipient],
         text, images, call
-    }, { new: true, upsert: true })
+    }, { new: true, upsert: true }) //upsert: if conversation not exist, create one
 
+    //create new message in exist conversation
     const newMessage = new Message({
         conversation: newConversation._id,
         sender, call,

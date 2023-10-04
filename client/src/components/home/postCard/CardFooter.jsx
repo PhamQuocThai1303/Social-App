@@ -46,29 +46,31 @@ const CardFooter = ({ post }) => {
         try {
             await likePost({ post, user }).unwrap()
 
-            //socket
-            const newPost = { ...post, likes: [...post.likes, user] }
-            socket.emit('likePost', newPost) //handle likePost event on socket event 
+            if (post.user._id !== user._id) { //dont send noti to authUser
+                //socket
+                const newPost = { ...post, likes: [...post.likes, user] }
+                socket.emit('likePost', newPost) //handle likePost event on socket event 
 
-            //Notify
-            const notify = {
-                userId: user._id,
-                postId: post._id,
-                text: 'like your post.',
-                recipients: [post.user._id],
-                url: `/post/${post._id}`,
-                content: post.content,
-            }
-            const { notify: res } = await createNotify({ notify }).unwrap()
-
-            //socket
-            socket.emit('createNotify', { //create notify
-                ...res,
-                user: {
-                    username: user.username,
-                    avatar: user.avatar
+                //Notify
+                const notify = {
+                    userId: user._id,
+                    postId: post._id,
+                    text: 'like your post.',
+                    recipients: [post.user._id],
+                    url: `/post/${post._id}`,
+                    content: post.content,
                 }
-            })
+                const { notify: res } = await createNotify({ notify }).unwrap()
+
+                //socket
+                socket.emit('createNotify', { //create notify
+                    ...res,
+                    user: {
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                })
+            }
 
             setIsLike(true)
         } catch (err) {
@@ -81,27 +83,29 @@ const CardFooter = ({ post }) => {
         try {
             await unlikePost({ post, user }).unwrap()
 
-            //socket
-            const newPost = { ...post, likes: post.likes.filter(item => item._id !== user._id) }
-            socket.emit('unLikePost', newPost)//handle unlikePost event on socket event
+            if (post.user._id !== user._id) {//dont send noti to authUser
+                //socket
+                const newPost = { ...post, likes: post.likes.filter(item => item._id !== user._id) }
+                socket.emit('unLikePost', newPost)//handle unlikePost event on socket event
 
-            // Notify
-            const notify = {
-                postId: post._id,
-                recipients: user.followers,
-                url: `/post/${post._id}`,
-            }
-
-            const { notify: res } = await deleteNotify({ notify }).unwrap()
-
-            //socket
-            socket.emit('deleteNotify', {//deleteNotify
-                ...res,
-                user: {
-                    username: user.username,
-                    avatar: user.avatar
+                // Notify
+                const notify = {
+                    postId: post._id,
+                    recipients: user.followers,
+                    url: `/post/${post._id}`,
                 }
-            })
+
+                const { notify: res } = await deleteNotify({ notify }).unwrap()
+
+                //socket
+                socket.emit('deleteNotify', {//deleteNotify
+                    ...res,
+                    user: {
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                })
+            }
 
             setIsLike(false)
         } catch (err) {
@@ -110,8 +114,10 @@ const CardFooter = ({ post }) => {
     }
 
     useEffect(() => {
-        if (user.saved.find((save) => save === post._id)) {
-            setSaved(true)
+        if (user) {
+            if (user.saved.find((save) => save === post._id)) {
+                setSaved(true)
+            }
         }
     }, [user.saved, userId, saved])
 

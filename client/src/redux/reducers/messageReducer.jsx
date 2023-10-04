@@ -24,7 +24,7 @@ const messageSlice = createSlice({
             return {
                 ...state,
                 data: [...state.data, action.payload],
-                users: state.users.map(user =>
+                users: state.users.map(user => //if recipient not in leftside, add new message and also add user into leftside
                     user._id === action.payload.recipient || user._id === action.payload.sender
                         ? { ...user, text: action.payload.text, images: action.payload.images }
                         : user

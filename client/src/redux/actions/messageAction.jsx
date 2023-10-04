@@ -46,7 +46,7 @@ export const messageApiSlice = apiSlice.injectEndpoints({
                     const { conversations } = data
 
                     let newArr = [];
-                    conversations.forEach(item => {
+                    conversations.forEach(item => { //create newArr message with the id of params
                         item.recipients.forEach(cv => {
                             if (cv._id !== arg.id) {
                                 newArr.push({ ...cv, text: item.text, images: item.images, call: item.call })

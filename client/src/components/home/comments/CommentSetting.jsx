@@ -36,29 +36,33 @@ const CommentSetting = ({ post, comment }) => {
         dispatch(updateUserPost({ newPost }))
         dispatch(updateSinglePost({ newPost }))
 
-        //socket
-        socket.emit('deleteComment', newPost)
+
 
         try {
             deleteReplyArr.forEach(async (cmt) => { //delete het cmt trong deleteReplyCmt
                 await deleteComment({ cmtId: cmt._id, userId: cmt.user }).unwrap()
 
-                //Notify
-                const notify = {
-                    cmtId: cmt._id,
-                    text: comment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
-                    recipients: comment.reply ? [comment.tag._id] : [post.user._id],
-                    url: `/post/${post._id}`,
-                }
-                const { notify: resNoti } = await deleteNotify({ notify }).unwrap()
-                //socket
-                socket.emit('deleteNotify', {
-                    ...resNoti,
-                    user: {
-                        username: user.username,
-                        avatar: user.avatar
+                if (post.user._id !== user._id) { //dont send noti to authUser
+                    //socket
+                    socket.emit('deleteComment', newPost)
+
+                    //Notify
+                    const notify = {
+                        cmtId: cmt._id,
+                        text: comment.reply ? 'mentioned you in a comment.' : 'has commented on your post.',
+                        recipients: comment.reply ? [comment.tag._id] : [post.user._id],
+                        url: `/post/${post._id}`,
                     }
-                })
+                    const { notify: resNoti } = await deleteNotify({ notify }).unwrap()
+                    //socket
+                    socket.emit('deleteNotify', {
+                        ...resNoti,
+                        user: {
+                            username: user.username,
+                            avatar: user.avatar
+                        }
+                    })
+                }
             })
 
 
