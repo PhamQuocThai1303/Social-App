@@ -1,22 +1,30 @@
 import React from "react"
 import Avatar from "../Avatar"
+import MessageSetting from "./MessageSetting"
 
-const MessageDisplay = ({ user, isAuth, msg }) => {
+const MessageDisplay = ({ user, isAuth, msg, data }) => {
+
     return (
         <div>
 
             {isAuth
+                //your message
                 ? <div className="flex items-end justify-end">
                     <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
                         <div className="flex flex-col items-end ">
+
                             {msg.text &&
-                                <span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white">
-                                    {msg.text}
-                                </span>
+                                <div>
+                                    <MessageSetting data={data} msg={msg} />
+                                    <span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ml-2">
+                                        {msg.text}
+                                    </span>
+                                </div>
                             }
                             {msg.images &&
                                 msg.images.map((item, index) => (
                                     <div key={index}>
+                                        <MessageSetting data={data} msg={msg} />
                                         <img src={item.url}
                                             alt="avatar"
                                             className='sm:max-w-[250px] sm:max-h-[250px] max-w-[200px] max-h-[200px] object-contain border-2 '
@@ -34,6 +42,7 @@ const MessageDisplay = ({ user, isAuth, msg }) => {
                     </div>
                 </div>
 
+                //other message
                 : <div className="flex items-end">
                     <div className="flex order-1 mb-4">
                         <Avatar avatar={user.avatar} />

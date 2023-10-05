@@ -31,7 +31,10 @@ const createMessage = async (req, res) => {
 
     await newMessage.save()
 
-    res.json({ message: 'Create Success!' })
+    res.json({
+        message: 'Create Success!',
+        newMessage: newMessage
+    })
 }
 
 // @desc getConversations
@@ -53,7 +56,7 @@ const getConversations = async (req, res) => {
 // @route GET /message/:id/:authId
 // @access Public
 const getMessage = async (req, res) => {
-    const { id, authId } = req.params
+    const { id, authId } = req.params //id: id of recipient
 
     const foundMessage = await Message.find({
         $or: [
@@ -67,8 +70,19 @@ const getMessage = async (req, res) => {
     })
 }
 
+// @desc deleteMessage
+// @route DELETE /message/:id/:authId
+// @access Public
+const deleteMessage = async (req, res) => {
+    const { id, authId } = req.params //id: id of message
+
+    await Message.findOneAndDelete({ _id: id, sender: authId })
+    res.json({ message: 'Delete Success!' })
+}
+
 module.exports = {
     createMessage,
     getConversations,
     getMessage,
+    deleteMessage,
 }

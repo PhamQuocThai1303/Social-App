@@ -161,14 +161,14 @@ const RightSide = () => {
                                 {
                                     msg.sender !== user._id &&
                                     <div className="my-4">
-                                        <MessageDisplay user={curUser} isAuth={false} msg={msg} />
+                                        <MessageDisplay user={curUser} isAuth={false} msg={msg} data={data} />
                                     </div>
                                 }
 
                                 {
                                     msg.sender === user._id &&
                                     <div className="my-2">
-                                        <MessageDisplay user={user} isAuth={true} msg={msg} />
+                                        <MessageDisplay user={user} isAuth={true} msg={msg} data={data} />
                                     </div>
                                 }
                             </div>

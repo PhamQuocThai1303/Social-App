@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice"
-import { addMessage, getConversations, getMessage } from "../reducers/messageReducer";
+import { addMessage, getConversations, getMessage, deleteMessage } from "../reducers/messageReducer";
 
 export const messageApiSlice = apiSlice.injectEndpoints({
 
@@ -28,8 +28,9 @@ export const messageApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    const { message } = arg
-                    dispatch(addMessage(message))
+                    const { newMessage } = data
+                    // const { message } = arg
+                    dispatch(addMessage(newMessage))
                 } catch (err) {
                     console.log(err);
                 }
@@ -75,6 +76,20 @@ export const messageApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+        deleteMessage: builder.mutation({
+            query: args => ({
+                url: `/message/${args.id}/${args.authId}`,
+                method: 'DELETE'
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    dispatch(deleteMessage(arg.id))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
     })
 })
 
@@ -82,5 +97,6 @@ export const {
     useAddUserMutation,
     useCreateMessageMutation,
     useLazyGetConversationsQuery,
-    useGetMessageMutation
+    useGetMessageMutation,
+    useDeleteMessageMutation,
 } = messageApiSlice 

@@ -44,10 +44,18 @@ const messageSlice = createSlice({
                 ...state,
                 data: [...action.payload]
             }
+        },
+
+        deleteMessage: (state, action) => {
+
+            return {
+                ...state,
+                data: state.data.filter(item => item._id !== action.payload)
+            }
         }
     }
 })
 
-export const { addUser, addMessage, getConversations, getMessage } = messageSlice.actions
+export const { addUser, addMessage, getConversations, getMessage, deleteMessage } = messageSlice.actions
 
 export default messageSlice.reducer

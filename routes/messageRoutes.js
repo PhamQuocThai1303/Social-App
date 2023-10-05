@@ -9,6 +9,7 @@ const {
     createMessage,
     getConversations,
     getMessage,
+    deleteMessage,
 } = messageController
 
 router.route('/message')
@@ -20,5 +21,7 @@ router.route('/conversations/:id')
 router.route('/message/:id/:authId')
     .get(getMessage)
 
+router.route('/message/:id/:authId')
+    .delete(deleteMessage)
 
 module.exports = router
