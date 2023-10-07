@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import UserCard from "../UserCard"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom"
 
@@ -21,7 +21,9 @@ const RightSide = () => {
     const { socket } = useSelector((state) => state.socket)
 
     const dispatch = useDispatch()
+    const navigate = useNavigate();
     const refDisplay = useRef()
+
     const [createMessage] = useCreateMessageMutation()
     const [getMessage] = useGetMessageMutation()
 
@@ -81,6 +83,7 @@ const RightSide = () => {
                 recipient: curUser?._id,
                 text,
                 images: media,
+                recall: false,
                 createdAt: new Date().toISOString()
             }
             setImgLoading(false)
@@ -129,6 +132,12 @@ const RightSide = () => {
         getMessagesData()
     }, [userId, user])
 
+    // const handleDeleteConversation = () => {
+    //     // if(window.confirm('Do you want to delete?')){
+    //     // }
+    //     dispatch(deleteConversation(userId));
+    //     navigate("/message");
+    // }
 
 
     return (
@@ -138,7 +147,7 @@ const RightSide = () => {
                     <Link to={`/profile/${curUser._id}`} className="w-full">
                         <UserCard user={curUser} />
                     </Link>
-                    <TfiTrash className="absolute w-6 h-6 right-0 mt-4 mr-10 cursor-pointer" />
+                    {/* <TfiTrash className="absolute w-6 h-6 right-0 mt-4 mr-10 cursor-pointer" onClick={handleDeleteConversation} /> */}
                 </div>
             }
 
@@ -146,15 +155,7 @@ const RightSide = () => {
             <div className="grow flex flex-col w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto ">
                 <div className="overflow-y-scroll max-h-[500px]" ref={refDisplay}
                     style={{ scrollBehavior: "smooth" }}>
-                    {
-                        imgLoading &&
-                        <div className="inline-block bg-white ">
-                            <div className="flex justify-center items-center h-full">
-                                <img className="h-16 w-16" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
-                            </div>
-                        </div>
 
-                    }
                     {
                         data?.map((msg, index) => (
                             <div key={index}>
@@ -173,6 +174,15 @@ const RightSide = () => {
                                 }
                             </div>
                         ))
+
+                    }
+                    {
+                        imgLoading &&
+                        <div className="block bg-white">
+                            <div className="flex justify-end items-end h-full">
+                                <img className="h-16 w-16 " src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+                            </div>
+                        </div>
 
                     }
                 </div>

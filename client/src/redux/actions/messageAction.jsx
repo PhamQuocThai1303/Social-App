@@ -79,12 +79,26 @@ export const messageApiSlice = apiSlice.injectEndpoints({
         deleteMessage: builder.mutation({
             query: args => ({
                 url: `/message/${args.id}/${args.authId}`,
-                method: 'DELETE'
+                method: 'PATCH'
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
                     dispatch(deleteMessage(arg.id))
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+        restoreMessage: builder.mutation({
+            query: args => ({
+                url: `/restoreMsg/${args.id}/${args.authId}`,
+                method: 'PATCH'
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    // dispatch(deleteMessage(arg.id))
                 } catch (err) {
                     console.log(err);
                 }
@@ -99,4 +113,5 @@ export const {
     useLazyGetConversationsQuery,
     useGetMessageMutation,
     useDeleteMessageMutation,
+    useRestoreMessageMutation
 } = messageApiSlice 

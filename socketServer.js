@@ -88,6 +88,18 @@ const socketServer = (socket) => {
         const user = users.find(user => user.id === message.recipient)
         user && socket.to(`${user.socketId}`).emit('addMessageToClient', message)
     })
+
+    //deleteMessage
+    socket.on('deleteMessage', message => {
+        const user = users.find(user => user.id === message.recipient)
+        user && socket.to(`${user.socketId}`).emit('deleteMessageToClient', message)
+    })
+
+    //restoreMessage
+    socket.on('restoreMessage', message => {
+        const user = users.find(user => user.id === message.recipient)
+        user && socket.to(`${user.socketId}`).emit('restoreMessageToClient', message)
+    })
 }
 
 module.exports = socketServer

@@ -6,7 +6,11 @@ const messageSchema = new mongoose.Schema({
     recipient: { type: mongoose.Types.ObjectId, ref: 'User' },
     text: String,
     images: Array,
-    call: Object
+    call: Object,
+    recall: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 })

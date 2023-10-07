@@ -71,18 +71,63 @@ const getMessage = async (req, res) => {
 }
 
 // @desc deleteMessage
-// @route DELETE /message/:id/:authId
+// @route PATCH /message/:id/:authId
 // @access Public
 const deleteMessage = async (req, res) => {
     const { id, authId } = req.params //id: id of message
 
-    await Message.findOneAndDelete({ _id: id, sender: authId })
+    await Message.findOneAndUpdate(
+        { _id: id, sender: authId },
+        {
+            $set: {
+                recall: true
+            }
+        }
+    )
     res.json({ message: 'Delete Success!' })
 }
+
+// @desc restoreMessage
+// @route PATCH /restoreMsg/:id/:authId
+// @access Public
+const restoreMessage = async (req, res) => {
+    const { id, authId } = req.params //id: id of message
+
+    await Message.findOneAndUpdate(
+        { _id: id, sender: authId },
+        {
+            $set: {
+                recall: false
+            }
+        }
+    )
+    res.json({ message: 'Restore Success!' })
+}
+
+
+// // @desc deleteConversation
+// // @route DELETE /conversation/:id/:authId
+// // @access Public
+// const deleteConversation = async (req, res) => {
+//************ Because of structure of conversation's db, once delete a conversation from user side, it also delete from the other side (recipient)************ */
+//     const { id, authId } = req.params //id: id of recipient
+//     const newConversation = await Conversation.findOneAndDelete({
+//         $or: [
+//             {recipients: [authId, id]},
+//             {recipients: [id, authId]}
+//         ]
+//     })
+
+//     await Message.deleteMany({conversation: newConversation._id})
+
+//     res.json({ message: 'Delete Success!' })
+// }
 
 module.exports = {
     createMessage,
     getConversations,
     getMessage,
     deleteMessage,
+    restoreMessage
+    // deleteConversation
 }

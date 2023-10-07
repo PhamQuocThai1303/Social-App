@@ -3,7 +3,8 @@ import { AiOutlineEllipsis } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux"
 import React, { Fragment } from "react"
 import { toast } from 'react-toastify';
-import { useDeleteMessageMutation } from '../../redux/actions/messageAction';
+import { useParams } from "react-router-dom"
+import { useDeleteMessageMutation, useGetMessageMutation, useRestoreMessageMutation } from '../../redux/actions/messageAction';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -11,16 +12,51 @@ function classNames(...classes) {
 
 const MessageSetting = ({ data, msg }) => {
     const { user } = useSelector((state) => state.auth)
+    const { socket } = useSelector((state) => state.socket)
 
+    const { userId } = useParams()
     const dispatch = useDispatch()
     const [deleteMessage] = useDeleteMessageMutation()
+    const [getMessage] = useGetMessageMutation()
+    const [restoreMessage] = useRestoreMessageMutation()
 
     const handleDelete = async (e) => {
         e.preventDefault()
         if (!data) return;
 
+        const message = {
+            sender: user?._id,
+            recipient: userId,
+            text: msg.text,
+            images: msg.images
+        }
+
+
         if (window.confirm('Do you want to delete?')) {
             await deleteMessage({ id: msg._id, authId: user._id }).unwrap()
+            await getMessage({ authId: user?._id, id: userId }).unwrap()
+
+            socket.emit('deleteMessage', message)
+        }
+    }
+
+    const handleRestore = async (e) => {
+        e.preventDefault()
+        if (!data) return;
+
+        const message = {
+            sender: user?._id,
+            recipient: userId,
+            text: msg.text,
+            images: msg.images
+        }
+
+
+        if (window.confirm('Do you want to restore this message?')) {
+            await restoreMessage({ id: msg._id, authId: user._id }).unwrap()
+            await getMessage({ authId: user?._id, id: userId }).unwrap()
+
+            socket.emit('restoreMessage', message)
         }
     }
 
@@ -45,21 +81,36 @@ const MessageSetting = ({ data, msg }) => {
                 >
                     <Menu.Items className="absolute right-0 z-10 mt-1 w-[50px] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <a
-                                        href="#"
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-2 py-1 text-xs'
-                                        )}
-                                        onClick={(e) => handleDelete(e)}
-                                    >
-                                        Delete
-                                    </a>
-                                )}
-                            </Menu.Item>
-
+                            {msg.recall == false
+                                ? <Menu.Item>
+                                    {({ active }) => (
+                                        <a
+                                            href="#"
+                                            className={classNames(
+                                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                'block px-2 py-1 text-xs'
+                                            )}
+                                            onClick={(e) => handleDelete(e)}
+                                        >
+                                            Delete
+                                        </a>
+                                    )}
+                                </Menu.Item>
+                                : <Menu.Item>
+                                    {({ active }) => (
+                                        <a
+                                            href="#"
+                                            className={classNames(
+                                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                'block px-2 py-1 text-xs'
+                                            )}
+                                            onClick={(e) => handleRestore(e)}
+                                        >
+                                            Restore
+                                        </a>
+                                    )}
+                                </Menu.Item>
+                            }
                         </div>
                     </Menu.Items>
                 </Transition>
