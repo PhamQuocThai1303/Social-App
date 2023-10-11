@@ -3,10 +3,12 @@ import { useSelector, useDispatch } from "react-redux"
 import { createNotify, deleteNotify } from "./redux/reducers/notifyReducer"
 import { addMessage, deleteMessage } from "./redux/reducers/messageReducer"
 import { useGetMessageMutation } from "./redux/actions/messageAction"
+import { setOnline, setOffline } from "./redux/reducers/onlineReducer"
 
 const SocketClient = () => {
     const { user } = useSelector((state) => state.auth)
     const { socket } = useSelector((state) => state.socket)
+    const { online } = useSelector((state) => state.online)
 
     const [getMessage] = useGetMessageMutation()
 
@@ -14,8 +16,8 @@ const SocketClient = () => {
 
     //joinUser
     useEffect(() => {
-        socket.emit('joinUser', user?._id)
-    }, [socket, user._id])
+        socket.emit('joinUser', user)
+    }, [socket, user])
 
     //likePost
     useEffect(() => {
@@ -116,6 +118,43 @@ const SocketClient = () => {
         })
         return () => socket.off('restoreMessageToClient') //cancel an event on socket
     })
+
+    //check user online/offline
+    useEffect(() => {
+        socket.emit('checkUserOnline', user)
+    }, [socket, user])
+
+    useEffect(() => {
+        socket.on('checkUserOnlineToMe', data => {
+            data.forEach(item => {
+                if (!online.includes(item.id)) {
+                    dispatch(setOnline({ onlineUser: item.id }))
+                }
+            })
+        })
+
+        return () => socket.off('checkUserOnlineToMe')
+    }, [socket, online])
+
+    useEffect(() => {
+        socket.on('checkUserOnlineToClient', id => {
+            console.log(id);
+            if (!online.includes(id)) {
+                dispatch(setOnline({ onlineUser: id }))
+            }
+        })
+
+        return () => socket.off('checkUserOnlineToClient')
+    }, [socket, online])
+
+    //Check user offline
+    useEffect(() => {
+        socket.on('CheckUserOffline', id => {
+            dispatch(setOffline({ offlineUser: id }))
+        })
+
+        return () => socket.off('CheckUserOffline')
+    }, [socket, online])
 
     return (
         <></>

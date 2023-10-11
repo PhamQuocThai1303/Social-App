@@ -10,7 +10,10 @@ import { useLazyGetConversationsQuery } from "../../redux/actions/messageAction"
 const LeftSide = () => {
     const { user } = useSelector((state) => state.auth)
     const { users, data } = useSelector((state) => state.message)
+    const { online } = useSelector((state) => state.online)
+
     const [isSearch, setIsSearch] = useState(false)
+    const [onlineUser, setOnlineUser] = useState([])
 
     const [getConversations] = useLazyGetConversationsQuery({ id: user._id })
 
@@ -19,6 +22,13 @@ const LeftSide = () => {
             getConversations({ id: user._id })
         }
     }, [user._id, user])
+
+    //Check user online / offline
+    useEffect(() => {
+        if (online) {
+            setOnlineUser(online);
+        }
+    }, [online])
 
     return (
         <div className="">
@@ -36,7 +46,10 @@ const LeftSide = () => {
                             users.map((item) => (
                                 <Link key={item._id} className="relative" to={`/message/${item._id}`}>
                                     <UserCard user={item} msg={true} />
-                                    <div className="absolute rounded-full bg-blue-600 w-4 h-4 ml-4 col-span-1 right-0 top-0 mt-2 mr-2" />
+                                    {onlineUser.includes(item._id)
+                                        ? <div className="absolute rounded-full bg-blue-600 w-4 h-4 ml-4 col-span-1 right-0 top-0 mt-2 mr-2" />
+                                        : <div className="absolute rounded-full bg-slate-300 w-4 h-4 ml-4 col-span-1 right-0 top-0 mt-2 mr-2" />
+                                    }
                                 </Link>
                             ))
                         }

@@ -119,7 +119,7 @@ const CardFooter = ({ post }) => {
                 setSaved(true)
             }
         }
-    }, [user.saved, userId, saved])
+    }, [user, userId, saved])
 
     const handleSavePost = async (e) => {
         e.preventDefault()

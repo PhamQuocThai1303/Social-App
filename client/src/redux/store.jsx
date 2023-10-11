@@ -11,6 +11,7 @@ import singlePostReducer from "./reducers/singlePostReducer";
 import suggestionReducer from "./reducers/suggestionReducer";
 import socketReducer from "./reducers/socketReducer";
 import messageReducer from "./reducers/messageReducer";
+import onlineReducer from "./reducers/onlineReducer";
 
 export const store = configureStore({
     reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
         suggestion: suggestionReducer,
         socket: socketReducer,
         message: messageReducer,
+        online: onlineReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: false, //fix bug "A non-serializable value was detected in an action" when use socketReducer

@@ -3,10 +3,22 @@ let users = [] //store all users on server
 
 const socketServer = (socket) => {
     //Connect && Disconnect
-    socket.on('joinUser', id => {  //socket.on -> is a method that listens for an event on the socket.
-        users.push({ id, socketId: socket.id })
+    socket.on('joinUser', user => {  //socket.on -> is a method that listens for an event on the socket.
+        users.push({ id: user._id, socketId: socket.id, followers: user.followers })
     })
     socket.on('disconnect', () => {
+        const data = users.find(user => user.socketId === socket.id)// find authUser
+        if (data) {
+            const clients = users.filter(user =>
+                data.followers.find(item => item._id === user.id)
+            )
+
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    socket.to(`${client.socketId}`).emit('CheckUserOffline', data.id) //if they r online, send to followers that im offline when im disconnect
+                })
+            }
+        }
         users = users.filter(user => user.socketId !== socket.id)
     })
 
@@ -99,6 +111,29 @@ const socketServer = (socket) => {
     socket.on('restoreMessage', message => {
         const user = users.find(user => user.id === message.recipient)
         user && socket.to(`${user.socketId}`).emit('restoreMessageToClient', message)
+        console.log(users);
+    })
+
+    //check user online/offline
+    socket.on('checkUserOnline', data => {
+        //send socket to all followingUser of authUser (me when i see my following online)
+        const following = users.filter(user =>
+            data.following.find(item => item._id === user.id)
+        )
+        socket.emit('checkUserOnlineToMe', following)
+        //
+
+        //send socket to all followersUser of authUser (followers when they see i online)
+        const clients = users.filter(user =>
+            data.followers.find(item => item._id === user.id)
+        )
+
+        if (clients.length > 0) {
+            clients.forEach(client => {
+                socket.to(`${client.socketId}`).emit('checkUserOnlineToClient', data._id) //send authUserId to followers
+            })
+        }
+        //
     })
 }
 
