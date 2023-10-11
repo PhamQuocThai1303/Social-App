@@ -30,12 +30,23 @@ const getUser = async (req, res) => {
     }
 }
 
+// @desc geAlltUser
+// @route GET /user
+// @access Public
+const getAllUser = async (req, res) => {
+
+    const users = await User.find().select('-password').lean()
+    if (!users?.length) {
+        return res.status(400).json({ message: 'No users found' })
+    }
+    res.status(200).json({ users })
+}
+
 // @desc updateUser
 // @route POST /user/:id
 // @access Public
 const updateUser = async (req, res) => {
     const { id, fullname, mobile, address, website, story, gender, avatar } = req.body
-    console.log(avatar);
     if (!fullname) return res.status(400).json({ message: "Fullname is required!" })
 
     if (fullname && fullname.length > 25) return res.status(400).json({ message: 'Max characters of fullname are 25' })
@@ -127,6 +138,7 @@ const suggestionUser = async (req, res) => {
 module.exports = {
     searchUser,
     getUser,
+    getAllUser,
     updateUser,
     follow,
     unfollow,

@@ -3,13 +3,13 @@ const Conversation = require('../models/Conversation')
 const Message = require('../models/Message')
 const jwt = require('jsonwebtoken')
 
-// @desc createMessage
+// @desc createMessage 
 // @route POST /message
 // @access Public
 const createMessage = async (req, res) => {
-    const { sender, recipient, text, images, call } = req.body.message
+    const { sender, recipient, text, images } = req.body.message
 
-    if (!recipient || (!text.trim() && images.length === 0 && !call)) return;
+    if (!recipient || (!text.trim() && images.length === 0)) return;
 
     //update or create a conversation
     const newConversation = await Conversation.findOneAndUpdate({
@@ -19,14 +19,13 @@ const createMessage = async (req, res) => {
         ]
     }, {
         recipients: [sender, recipient],
-        text, images, call
+        text, images
     }, { new: true, upsert: true }) //upsert: if conversation not exist, create one
 
     //create new message in exist conversation
     const newMessage = new Message({
         conversation: newConversation._id,
-        sender, call,
-        recipient, text, images
+        sender, recipient, text, images
     })
 
     await newMessage.save()

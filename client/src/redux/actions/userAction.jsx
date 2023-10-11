@@ -31,6 +31,23 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 }
             }
         }),
+        getAllUser: builder.query({
+            query: (args) => ({
+                url: `/user`,
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { users } = data
+                    console.log(users);
+
+                } catch (err) {
+                    dispatch(setError(err.error.message))
+
+                }
+            }
+        }),
         updateUser: builder.mutation({
             query: args => ({
                 url: `/profile/${args.id}`,
@@ -102,4 +119,5 @@ export const {
     useFollowMutation,
     useUnfollowMutation,
     useSuggestUserQuery,
+    useLazyGetAllUserQuery,
 } = userApiSlice 

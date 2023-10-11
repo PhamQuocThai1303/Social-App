@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         maxlength: 20,
-        unique: true //unique username in db
+        unique: true
     },
     email: {
         type: String,
@@ -29,10 +29,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://res.cloudinary.com/pqt/image/upload/v1696685735/t-connect/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8_ztjdmm.jpg'
     },
-    role: [{
+    role: {
         type: String,
         default: 'user'
-    }],
+    },
     gender: {
         type: String,
         default: 'male'

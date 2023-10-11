@@ -69,7 +69,8 @@ const login = async (req, res) => {
         {
             "UserInfo": {
                 "username": foundUser.username,
-                "email": foundUser.email
+                "email": foundUser.email,
+                "role": foundUser.role
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -116,7 +117,8 @@ const refresh = async (req, res) => {
                 {
                     "UserInfo": {
                         "username": foundUser.username,
-                        "email": foundUser.email
+                        "email": foundUser.email,
+                        "role": foundUser.role
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,

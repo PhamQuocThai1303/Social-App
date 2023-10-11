@@ -20,6 +20,7 @@ const Header = () => {
         { name: 'Home', path: "/" },
         { name: 'Discover', path: "/discover" },
         { name: 'Message', path: "/message" },
+        { name: 'Admin', path: "/admin" }
     ]
 
     function classNames(...classes) {
@@ -75,13 +76,13 @@ const Header = () => {
 
                                 {/* left header */}
                                 <div className="flex flex-1 items-center sm:justify-start sm:items-stretch sm:col-span-3 sm:w-full">
-                                    <div className="sm:block hidden flex flex-shrink-0 items-center">
+                                    {/* <div className="sm:block hidden flex flex-shrink-0 items-center">
                                         <img
                                             className="h-8 w-auto"
-                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                            alt="Your Company"
+                                            src="https://res.cloudinary.com/pqt/image/upload/v1697014037/t-connect/logo_jxsyws.png"
+
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className="hidden sm:ml-6 sm:block">
                                         <div className="flex space-x-4">
                                             {navigation.map((item) => (
@@ -194,16 +195,7 @@ const Header = () => {
                                                         </Link>
                                                     )}
                                                 </Menu.Item>
-                                                <Menu.Item>
-                                                    {({ active }) => (
-                                                        <a
-                                                            href="#"
-                                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                        >
-                                                            Settings
-                                                        </a>
-                                                    )}
-                                                </Menu.Item>
+
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <a

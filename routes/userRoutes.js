@@ -8,6 +8,7 @@ const verifyJWT = require('../middleware/verifyJWT')
 const {
     searchUser,
     getUser,
+    getAllUser,
     updateUser,
     follow,
     unfollow,
@@ -20,6 +21,9 @@ router.route('/search')
 router.route('/profile/:id')
     .get(getUser)
     .post(updateUser)
+
+router.route('/user')
+    .get(getAllUser)
 
 router.route('/profile/:id/follow')
     .patch(follow)

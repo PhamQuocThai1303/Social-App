@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import UserCard from "../UserCard"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom"
 
@@ -21,7 +21,6 @@ const RightSide = () => {
     const { socket } = useSelector((state) => state.socket)
 
     const dispatch = useDispatch()
-    const navigate = useNavigate();
     const refDisplay = useRef()
 
     const [createMessage] = useCreateMessageMutation()
@@ -32,8 +31,6 @@ const RightSide = () => {
     const [text, setText] = useState("")
 
     const [images, setImages] = useState([])
-    const [stream, setStream] = useState(false)
-    const [tracks, setTracks] = useState('')
     const [imgLoading, setImgLoading] = useState(false)
 
     useEffect(() => {
@@ -76,7 +73,6 @@ const RightSide = () => {
 
             setText('')
             setImages([])
-            if (tracks) tracks.stop
 
             const message = {
                 sender: user?._id,
@@ -217,11 +213,11 @@ const RightSide = () => {
 
                     <div className="flex pl-0 space-x-1 sm:pl-2">
                         <Icons content={text} setContent={setText} />
-
+                        {/* 
                         <label type="button" className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl " >
                             <TfiCamera />
                             <span className="sr-only">Upload camera</span>
-                        </label>
+                        </label> */}
 
                         <label className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl">
                             <TfiGallery />

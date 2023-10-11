@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import { AiOutlineShareAlt } from "react-icons/ai";
 import Loading from '../alert/Loading'
 import EditProfile from './EditProfile'
@@ -6,6 +7,9 @@ import FollowBtn from '../FollowBtn'
 import FollowerModal from './FollowerModal'
 import FollowingModal from './FollowingModal'
 import { BASE_URL } from '../../utils/config'
+import { useDispatch } from 'react-redux'
+
+import { addUser } from '../../redux/reducers/messageReducer';
 
 import { toast } from 'react-toastify';
 
@@ -15,6 +19,8 @@ const Info = ({ id, profile, auth, postLn }) => {
     const [isEdit, setIsEdit] = useState(false)
     const [showFollower, setShowFollower] = useState(false)
     const [showFollowing, setShowFollowing] = useState(false)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (id === auth._id) {
@@ -28,6 +34,10 @@ const Info = ({ id, profile, auth, postLn }) => {
             setIsProfile(false)
         }
     }, [id, profile, auth])
+
+    const handleMessage = (user) => {
+        dispatch(addUser({ user }))
+    }
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(`${BASE_URL}/profile/${userData?._id}`)
@@ -79,11 +89,13 @@ const Info = ({ id, profile, auth, postLn }) => {
                                 : <FollowBtn user={userData} />
                             }
                             {!isProfile
-                                && <button
-                                    className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                                && <Link
+                                    className="text-white flex items-center py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                                    to={`/message/${id}`}
+                                    onClick={() => handleMessage(userData)}
                                 >
                                     Message
-                                </button>
+                                </Link>
                             }
                             <button onClick={handleCopyLink}
                                 className="text-white py-2 sm:px-4 px-2 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 text-2xl"

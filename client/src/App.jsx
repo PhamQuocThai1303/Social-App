@@ -22,8 +22,11 @@ import Post from './pages/post/[id]'
 import Conversation from './pages/message/[id]'
 import StatusModal from './components/StatusModal'
 import Loading from './components/alert/Loading'
+import AdminPage from './pages/admin'
 import SocketClient from './SocketClient'
 
+import { ROLES } from './utils/config'
+import RequireAuth from './redux/actions/RequireAuth'
 import PrivateRouter from './redux/actions/PrivateRouter'
 import Alert from './components/alert/Alert'
 
@@ -75,24 +78,34 @@ function App() {
         <Route path="/" element={token ? <Home user={user} /> : <Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route exact path='/' element={<PrivateRouter />}>
+        {/* check role to enter in app */}
+        <Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}>
+          <Route exact path='/' element={<PrivateRouter />}>
 
-          <Route path='/message' element={<Message />} />
-          <Route path='/discover' element={user?._id ? <Discover userId={user?._id} /> : <Loading />} />
-          <Route
-            path="/profile/:userId"
-            element={<Profile />}
-          />
-          <Route
-            path="/post/:postId"
-            element={<Post />}
-          />
-          <Route
-            path="/message/:userId"
-            element={<Conversation />}
-          />
-          <Route path="*" element={<NotFound />} />
+            <Route path='/message' element={<Message />} />
+            <Route path='/discover' element={user?._id ? <Discover userId={user?._id} /> : <Loading />} />
+            <Route
+              path="/profile/:userId"
+              element={<Profile />}
+            />
+            <Route
+              path="/post/:postId"
+              element={<Post />}
+            />
+            <Route
+              path="/message/:userId"
+              element={<Conversation />}
+            />
 
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+              <Route
+                path="/admin"
+                element={<AdminPage />}
+              />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+
+          </Route>
         </Route>
       </Routes>
 
