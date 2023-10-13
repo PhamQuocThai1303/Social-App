@@ -5,12 +5,20 @@ const jwt = require('jsonwebtoken')
 // @route POST /search
 // @access Public
 const searchUser = async (req, res) => {
-    const { username } = req.body
+    const { username, isAdmin } = req.body
     try {
-        const users = await User.find({ username: { $regex: username } })
-            .limit(5).select("fullname username avatar")
+        if (isAdmin) {
+            const users = await User.find({ username: { $regex: username } })
+                .limit(5).select('-password')
 
-        res.status(200).json({ users })
+            res.status(200).json({ users })
+        }
+        else {
+            const users = await User.find({ username: { $regex: username } })
+                .limit(5).select("fullname username avatar")
+
+            res.status(200).json({ users })
+        }
     } catch (err) {
         return res.status(500).json({ message: 'No users found!' })
     }
@@ -32,10 +40,10 @@ const getUser = async (req, res) => {
 
 // @desc geAlltUser
 // @route GET /user
-// @access Public
+// @access Public 
 const getAllUser = async (req, res) => {
 
-    const users = await User.find().select('-password').lean()
+    const users = await User.find().select('-password').lean().sort("username")
     if (!users?.length) {
         return res.status(400).json({ message: 'No users found' })
     }

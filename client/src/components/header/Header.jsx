@@ -15,12 +15,12 @@ import NotifyModal from './NotifyModal'
 import Avatar from '../Avatar'
 import SearchBar from './SearchBar'
 
-const Header = () => {
+const Header = ({ isAdmin }) => {
     const navigation = [
         { name: 'Home', path: "/" },
         { name: 'Discover', path: "/discover" },
         { name: 'Message', path: "/message" },
-        { name: 'Admin', path: "/admin" }
+        // { name: 'Admin', path: "/admin" }
     ]
 
     function classNames(...classes) {
@@ -76,17 +76,10 @@ const Header = () => {
 
                                 {/* left header */}
                                 <div className="flex flex-1 items-center sm:justify-start sm:items-stretch sm:col-span-3 sm:w-full">
-                                    {/* <div className="sm:block hidden flex flex-shrink-0 items-center">
-                                        <img
-                                            className="h-8 w-auto"
-                                            src="https://res.cloudinary.com/pqt/image/upload/v1697014037/t-connect/logo_jxsyws.png"
 
-                                        />
-                                    </div> */}
                                     <div className="hidden sm:ml-6 sm:block">
                                         <div className="flex space-x-4">
                                             {navigation.map((item) => (
-
                                                 <Link
                                                     key={item.name}
                                                     to={item.path}
@@ -100,6 +93,20 @@ const Header = () => {
                                                 </Link>
 
                                             ))}
+
+                                            {/* Admin selection */}
+                                            {isAdmin &&
+                                                <Link
+                                                    to="/admin"
+                                                    className={classNames(
+                                                        isCurrent('/admin') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                        'rounded-md px-3 py-2 text-sm font-medium cursor-pointer'
+                                                    )}
+                                                    aria-current={isCurrent('/admin') ? 'page' : undefined}
+                                                >
+                                                    Admin
+                                                </Link>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -239,8 +246,22 @@ const Header = () => {
                                         >
                                             {item.name}
                                         </Link>
+
                                     </div>
                                 ))}
+                                {/* Admin selection */}
+                                {isAdmin &&
+                                    <Link
+                                        to="/admin"
+                                        className={classNames(
+                                            isCurrent('/admin') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            'rounded-md px-3 py-2 text-sm font-medium cursor-pointer'
+                                        )}
+                                        aria-current={isCurrent('/admin') ? 'page' : undefined}
+                                    >
+                                        Admin
+                                    </Link>
+                                }
                             </div>
                         </Disclosure.Panel>
                     </>

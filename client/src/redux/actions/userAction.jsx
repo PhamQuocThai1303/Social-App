@@ -40,7 +40,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 try {
                     const { data } = await queryFulfilled
                     const { users } = data
-                    console.log(users);
 
                 } catch (err) {
                     dispatch(setError(err.error.message))

@@ -1,17 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRefreshMutation } from './redux/actions/authAction'
 import { useGetPostQuery } from './redux/actions/postAction'
 import { useLazyGetNotifyQuery } from './redux/actions/notifyAction'
-import { Navigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { setSocket } from './redux/reducers/socketReducer'
 import { io } from 'socket.io-client'
 
 import Register from './pages/register'
 import Login from './pages/login'
 import Home from './pages/home'
-// import Post from './pages/post'
 import Posts from './components/home/Posts'
 import Header from './components/header/Header'
 import NotFound from './pages/notFound'
@@ -27,29 +26,25 @@ import SocketClient from './SocketClient'
 
 import { ROLES } from './utils/config'
 import RequireAuth from './redux/actions/RequireAuth'
-import PrivateRouter from './redux/actions/PrivateRouter'
+import useAuth from './utils/useAuth'
 import Alert from './components/alert/Alert'
 
 function App() {
 
   const { user, token } = useSelector((state) => state.auth)
   const { status } = useSelector((state) => state.status)
+
+  const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useDispatch()
+
   const [refresh] = useRefreshMutation()
   const firstLogin = localStorage.getItem("firstLogin")
+  const { role, isAdmin } = useAuth()
 
   const { posts, isLoading } = useGetPostQuery({ id: user._id })
   const [getNotify] = useLazyGetNotifyQuery({ id: user._id })
 
-
-  useEffect(() => {
-    if (token !== null) {
-      localStorage.setItem("firstLogin", true)
-    }
-    else {
-      localStorage.setItem("firstLogin", false)
-    }
-  }, [token])
 
   useEffect(() => {
     if (user._id) {
@@ -61,7 +56,6 @@ function App() {
     if (firstLogin) {
       refresh()
       const socket = io("http://localhost:3500");
-      // console.log(socket);
       dispatch(setSocket({ socket }))
       return () => socket.close()
     }
@@ -69,18 +63,20 @@ function App() {
 
   return (
     <>
-      {token && <Header />}
+      {token && <Header isAdmin={isAdmin} />}
       {status && <StatusModal />}
       {token && <SocketClient />}
       <Alert />
 
       <Routes>
-        <Route path="/" element={token ? <Home user={user} /> : <Login />} />
+
         <Route path="/register" element={<Register />} />
+        <Route path="/" element={token ? <Home user={user} /> : <Login />} />
+
 
         {/* check role to enter in app */}
-        <Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}>
-          <Route exact path='/' element={<PrivateRouter />}>
+        {role &&
+          <Route exact path='/' element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} role={role} />}>
 
             <Route path='/message' element={<Message />} />
             <Route path='/discover' element={user?._id ? <Discover userId={user?._id} /> : <Loading />} />
@@ -97,16 +93,16 @@ function App() {
               element={<Conversation />}
             />
 
-            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} role={role} />}>
               <Route
                 path="/admin"
                 element={<AdminPage />}
               />
             </Route>
-            <Route path="*" element={<NotFound />} />
 
           </Route>
-        </Route>
+        }
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
     </>

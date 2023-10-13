@@ -1,9 +1,8 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom"
-import useAuth from "../../utils/useAuth"
 
-const RequireAuth = ({ allowedRoles }) => {
+const RequireAuth = ({ allowedRoles, role }) => {
     const location = useLocation()
-    const { role } = useAuth()
+    const firstLogin = localStorage.getItem('firstLogin')
 
     const content = (
         allowedRoles.includes(role)
@@ -13,4 +12,5 @@ const RequireAuth = ({ allowedRoles }) => {
 
     return content
 }
+
 export default RequireAuth

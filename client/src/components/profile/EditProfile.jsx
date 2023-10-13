@@ -19,13 +19,12 @@ const initialState = {
 const EditProfile = ({ user, setIsEdit, userAva }) => {
     const id = user._id
 
-    //   const { user, token } = useSelector((state) => state.auth)
-
     const [userData, setUserData] = useState(initialState)
     const { fullname, mobile, address, website, story, gender } = userData
     const [updateUser, { isLoading }] = useUpdateUserMutation()
 
     const [avatar, setAvatar] = useState('')
+    const [imgLoading, setImgLoading] = useState(false)
 
     useEffect(() => {
         setUserData(user)
@@ -43,6 +42,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setImgLoading(true)
         //return img url tren cloudinary o imageUpload r moi updateUser
         try {
             let media;
@@ -52,6 +52,7 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
 
             await updateUser({ id, fullname, mobile, address, website, story, gender, avatar: avatar ? `${media[0].url}` : user?.avatar }).unwrap()
             setIsEdit(false)
+            setImgLoading(false)
             window.location.reload() //reload web
         } catch (error) {
             toast.error(error.data.message)
@@ -83,134 +84,136 @@ const EditProfile = ({ user, setIsEdit, userAva }) => {
                             </button>
                         </div>
                         {/* Modal body */}
-                        <div className='mx-2 my-4'>
-                            <form >
-                                <div className='flex flex-col items-center justify-center'>
-                                    <img src={avatar ? URL.createObjectURL(avatar) : userAva}
-                                        alt="avatar"
-                                        className='h-20 w-20 rounded-full'
-                                    />
+                        {imgLoading
+                            ? <Loading />
+                            : <div className='mx-2 my-4'>
+                                <form >
+                                    <div className='flex flex-col items-center justify-center'>
+                                        <img src={avatar ? URL.createObjectURL(avatar) : userAva}
+                                            alt="avatar"
+                                            className='h-20 w-20 rounded-full'
+                                        />
 
-                                    <div className="flex w-full items-center justify-center bg-grey-lighter">
-                                        <label className="w-full max-w-fit px-4 mt-4 flex justify-center items-center bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
-                                            <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                                            </svg>
-                                            <span className="pl-2 text-base leading-normal ">Select image</span>
-                                            <input type='file' className="hidden" onChange={changeAvatar} />
+                                        <div className="flex w-full items-center justify-center bg-grey-lighter">
+                                            <label className="w-full max-w-fit px-4 mt-4 flex justify-center items-center bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
+                                                <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                                </svg>
+                                                <span className="pl-2 text-base leading-normal ">Select image</span>
+                                                <input type='file' className="hidden" onChange={changeAvatar} />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {/* FUllname */}
+                                    <div>
+                                        <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Fullname
                                         </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="fullname"
+                                                name="fullname"
+                                                type="text"
+                                                required
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                onChange={handleChangeInput}
+                                                value={fullname}
+                                            />
+                                            <small >
+                                                {fullname.length}/25
+                                            </small>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* FUllname */}
-                                <div>
-                                    <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Fullname
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="fullname"
-                                            name="fullname"
-                                            type="text"
-                                            required
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            onChange={handleChangeInput}
-                                            value={fullname}
-                                        />
-                                        <small >
-                                            {fullname.length}/25
-                                        </small>
+
+                                    {/* Mobile */}
+                                    <div>
+                                        <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Mobile
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="mobile"
+                                                name="mobile"
+                                                type="text"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                onChange={handleChangeInput}
+                                                value={mobile}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Mobile */}
-                                <div>
-                                    <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Mobile
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="mobile"
-                                            name="mobile"
-                                            type="text"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            onChange={handleChangeInput}
-                                            value={mobile}
-                                        />
+                                    {/* Address */}
+                                    <div>
+                                        <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Address
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="address"
+                                                name="address"
+                                                type="text"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                onChange={handleChangeInput}
+                                                value={address}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Address */}
-                                <div>
-                                    <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Address
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="address"
-                                            name="address"
-                                            type="text"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            onChange={handleChangeInput}
-                                            value={address}
-                                        />
+                                    {/* Website */}
+                                    <div>
+                                        <label htmlFor="website" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Website
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                id="website"
+                                                name="website"
+                                                type="text"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                onChange={handleChangeInput}
+                                                value={website}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Website */}
-                                <div>
-                                    <label htmlFor="website" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Website
-                                    </label>
-                                    <div className="mt-2">
-                                        <input
-                                            id="website"
-                                            name="website"
-                                            type="text"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            onChange={handleChangeInput}
-                                            value={website}
-                                        />
+                                    {/* Story */}
+                                    <div>
+                                        <label htmlFor="story" className="block text-sm font-medium leading-6 text-gray-900">
+                                            Story
+                                        </label>
+                                        <div className="mt-2">
+                                            <textarea
+                                                id="story"
+                                                name="story"
+                                                cols="30" rows="3"
+                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                onChange={handleChangeInput}
+                                                value={story}
+                                            />
+                                            <small >
+                                                {story.length}/200
+                                            </small>
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Story */}
-                                <div>
-                                    <label htmlFor="story" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Story
-                                    </label>
-                                    <div className="mt-2">
-                                        <textarea
-                                            id="story"
-                                            name="story"
-                                            cols="30" rows="3"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            onChange={handleChangeInput}
-                                            value={story}
-                                        />
-                                        <small >
-                                            {story.length}/200
-                                        </small>
+                                    {/* gender */}
+                                    <div className="relative inline-flex">
+                                        <svg className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232"><path d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z" fill="#648299" fillRule="nonzero" /></svg>
+                                        <select onClick={handleChangeGender} className="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                                            <option name="gender" value="male">Male</option>
+                                            <option name="gender" value="female">Female</option>
+                                        </select>
                                     </div>
-                                </div>
-
-                                {/* gender */}
-                                <div className="relative inline-flex">
-                                    <svg className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232"><path d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z" fill="#648299" fillRule="nonzero" /></svg>
-                                    <select onClick={handleChangeGender} className="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
-                                        <option name="gender" value="male">Male</option>
-                                        <option name="gender" value="female">Female</option>
-                                    </select>
-                                </div>
-                                {/* footer */}
-                                <button data-modal-toggle="default-modal" className="ml-60 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit" onClick={(e) => handleSubmit(e)}>
-                                    SAVE
-                                </button>
-                                <button data-modal-toggle="default-modal" type="button" className="ml-2 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600" onClick={() => setIsEdit(false)}>
-                                    CANCEL
-                                </button>
-                            </form>
-                        </div>
-
+                                    {/* footer */}
+                                    <button data-modal-toggle="default-modal" className="ml-60 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="submit" onClick={(e) => handleSubmit(e)}>
+                                        SAVE
+                                    </button>
+                                    <button data-modal-toggle="default-modal" type="button" className="ml-2 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600" onClick={() => setIsEdit(false)}>
+                                        CANCEL
+                                    </button>
+                                </form>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
