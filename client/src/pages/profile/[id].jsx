@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useGetUserQuery } from '../../redux/actions/userAction'
-import { useGetUserPostQuery, useGetSavePostQuery } from '../../redux/actions/postAction'
+import { useGetUserPostQuery } from '../../redux/actions/postAction'
 
 import Info from '../../components/profile/Info'
 import Posts from '../../components/profile/Posts'

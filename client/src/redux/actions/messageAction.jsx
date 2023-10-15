@@ -29,7 +29,6 @@ export const messageApiSlice = apiSlice.injectEndpoints({
                 try {
                     const { data } = await queryFulfilled
                     const { newMessage } = data
-                    // const { message } = arg
                     dispatch(addMessage(newMessage))
                 } catch (err) {
                     console.log(err);
@@ -98,7 +97,6 @@ export const messageApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    // dispatch(deleteMessage(arg.id))
                 } catch (err) {
                     console.log(err);
                 }

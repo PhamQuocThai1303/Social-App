@@ -21,7 +21,6 @@ export const postApiSlice = apiSlice.injectEndpoints({
                     const { data } = await queryFulfilled
                     const { newPost } = data
                     dispatch(createPost({ newPost }))
-                    // console.log(newPost);
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }
@@ -38,7 +37,6 @@ export const postApiSlice = apiSlice.injectEndpoints({
                     const { data } = await queryFulfilled
                     const { posts, postsLength } = data
                     dispatch(getPost({ posts, postsLength }))
-                    // console.log(posts);
                 } catch (err) {
                     dispatch(setError(err.error.message))
                 }

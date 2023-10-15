@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { useDeletePostMutation } from "../redux/actions/postAction"
 import { useDeleteNotifyMutation } from "../redux/actions/notifyAction";

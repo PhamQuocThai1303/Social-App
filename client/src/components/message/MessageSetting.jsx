@@ -2,7 +2,6 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux"
 import React, { Fragment } from "react"
-import { toast } from 'react-toastify';
 import { useParams } from "react-router-dom"
 import { useDeleteMessageMutation, useGetMessageMutation, useRestoreMessageMutation } from '../../redux/actions/messageAction';
 

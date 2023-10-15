@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux"
 import React, { useState, useEffect } from "react"
 
 import CardBody from "./home/postCard/CardBody"
@@ -8,7 +7,6 @@ import Comments from "./home/Comments"
 import InputComment from "./home/InputComment"
 
 const PostCard = ({ post }) => {
-    const { posts } = useSelector((state) => state.homePost)
     return (
 
         <div className="w-full h-full border-2 rounded my-5">

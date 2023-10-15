@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import LeftSide from '../../components/message/LeftSide'
-// import message_image from '../../../public/message_image'
 import message_image from '../../assets/message_image.png'
 
 const Message = () => {
-    const { user } = useSelector((state) => state.auth)
 
     return (
         <div className="grid mx-2 grid-cols-12 sm:py-4 ">

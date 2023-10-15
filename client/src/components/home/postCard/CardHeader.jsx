@@ -1,14 +1,12 @@
 import { Fragment } from 'react'
 import Avatar from '../../Avatar'
-import { Link, redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from "react";
 import moment from 'moment'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { TfiMoreAlt } from "react-icons/tfi";
-import { toast } from 'react-toastify';
 
-import { useDeletePostMutation } from '../../../redux/actions/postAction';
 import StatusModal from '../../StatusModal';
 import WarningModal from '../../WarningModal';
 
@@ -23,7 +21,6 @@ const CardHeader = ({ post }) => {
 
     const dispatch = useDispatch()
 
-    const [deletePost] = useDeletePostMutation()
 
     const handleEditPost = (e) => {
         e.preventDefault()
@@ -33,13 +30,7 @@ const CardHeader = ({ post }) => {
     const handleDeletePost = async (e) => {
         e.preventDefault()
         setIsWarning(true)
-        // try {
-        //     const { message } = await deletePost({ postId: post._id, userId: user._id }).unwrap()
-        //     window.location.reload() //reload web
-        //     // return redirect("/"); //return homepage
-        // } catch (err) {
-        //     toast.error(err.data.message)
-        // }
+
     }
 
     return (

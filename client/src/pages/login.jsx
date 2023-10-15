@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useLoginMutation } from '../redux/actions/authAction'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCredentials, setLogin } from '../redux/reducers/authReducer'
@@ -22,10 +22,7 @@ const Login = () => {
 
     const [typePass, setTypePass] = useState(false)
 
-    const location = useLocation()
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-
 
     const [login, { isLoading }] = useLoginMutation()
 
@@ -43,7 +40,6 @@ const Login = () => {
             dispatch(setLogin({ foundUser }))
             dispatch(setLoading({ loading: isLoading }))
             dispatch(setSuccess("Login Success"))
-            // navigate("/")
             toast.success("Login success")
         } catch (err) {
             dispatch(setError(err.data.message))

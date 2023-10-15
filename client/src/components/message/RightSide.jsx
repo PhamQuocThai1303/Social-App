@@ -86,25 +86,7 @@ const RightSide = () => {
             await createMessage({ message }).unwrap()
 
             socket.emit('addMessage', message)
-            // // Notify 
-            // const notify = {
-            //     userId: user._id,
-            //     postId: newPost._id,
-            //     text: 'added a new post.',
-            //     recipients: newPost.user.followers,
-            //     url: `/post/${newPost._id}`,
-            //     content,
-            // }
-            // const { notify: res } = await createNotify({ notify }).unwrap()
 
-            // //socket
-            // socket.emit('createNotify', {
-            //     ...res,
-            //     user: {
-            //         username: user.username,
-            //         avatar: user.avatar
-            //     }
-            // })
 
             if (refDisplay.current) {
                 refDisplay.current.scrollTo(0, refDisplay.current.scrollHeight)
@@ -213,11 +195,6 @@ const RightSide = () => {
 
                     <div className="flex pl-0 space-x-1 sm:pl-2">
                         <Icons content={text} setContent={setText} />
-                        {/* 
-                        <label type="button" className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl " >
-                            <TfiCamera />
-                            <span className="sr-only">Upload camera</span>
-                        </label> */}
 
                         <label className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl">
                             <TfiGallery />

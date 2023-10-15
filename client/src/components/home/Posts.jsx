@@ -1,10 +1,8 @@
-import { useSelector } from "react-redux"
 import React, { useState, useEffect } from "react"
 import PostCard from "../PostCard"
 
 const Posts = ({ posts }) => {
     const [homePosts, setHomePosts] = useState([])
-    // const { posts } = useSelector((state) => state.homePost)
 
     useEffect(() => {
 

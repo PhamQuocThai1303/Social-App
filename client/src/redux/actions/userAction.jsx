@@ -39,7 +39,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    const { users } = data
 
                 } catch (err) {
                     dispatch(setError(err.error.message))

@@ -5,7 +5,6 @@ import { useGetDiscoverPostQuery } from '../redux/actions/postAction'
 import PostThumb from '../components/PostThumb'
 
 const Discover = ({ userId }) => {
-    const { user } = useSelector((state) => state.auth)
     const { posts } = useSelector((state) => state.discover)
     const { data } = useGetDiscoverPostQuery({ id: userId })
 

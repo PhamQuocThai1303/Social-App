@@ -63,7 +63,7 @@ const SearchBar = () => {
                     onInput={handleChangeInput}
                     value={search}
                 />
-                <div className='block w-[200%] sm:w-[35%] flex flex-col mt-2 fixed z-50'>
+                <div className=' w-[200%] sm:w-[35%] flex flex-col mt-2 fixed z-50'>
                     {
                         users?.map(user => (
                             <Link

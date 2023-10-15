@@ -9,7 +9,6 @@ import { useCreateCommentMutation } from '../../redux/actions/commentAction';
 import { updateSinglePost } from '../../redux/reducers/singlePostReducer';
 import { useCreateNotifyMutation } from '../../redux/actions/notifyAction';
 
-import { toast } from 'react-toastify';
 
 const InputComment = ({ children, post, onReply, setOnReply }) => {
     const { user } = useSelector((state) => state.auth)
@@ -38,8 +37,6 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
             reply: onReply && onReply.commentId,
             tag: onReply && onReply.user
         }
-
-        const newPost = { ...post, comments: [...post.comments, newComment] }
 
         try {
             const { newComment: res } = await createComment({ ...newComment, postId: post?._id, postUserId: post?.user?._id, userId: user?._id }).unwrap()
@@ -80,10 +77,6 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
 
         if (setOnReply) return setOnReply(false);
     }
-
-    useEffect(() => {
-        // if (onReply) setContent(children)
-    }, [onReply])
 
     return (
 

@@ -19,7 +19,7 @@ const NotifyModal = () => {
         await isReadNotify({ id: item?._id }).unwrap()
     }
 
-    const handleReadAll = async (item) => {
+    const handleReadAll = async () => {
         await readAllNotify({ notiArr: data }).unwrap()
     }
 

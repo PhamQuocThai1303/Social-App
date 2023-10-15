@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { checkImage, imageUpload } from '../../utils/uploadImage'
 import { useUpdateUserMutation } from '../../redux/actions/userAction';
 import Loading from '../alert/Loading';
