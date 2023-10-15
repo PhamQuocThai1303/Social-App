@@ -23,6 +23,7 @@
 - Save Posts: Users can save posts to their profile.
 - Comment Management: Users can create, read, update, and delete comments on posts.
 - Like/Unlike Comments: Users can like and unlike comments.
+- Search User: Users can search for other with their username.
 
 3. **Notifications**
 - Notification System: Users receive notifications for new followers, likes, and comments.
@@ -31,6 +32,13 @@
 4. **Messaging**
 - Message Management: Users can send, receive, and delete messages.
 - Real-time Chat: Chat with other users in real-time using a socket connection.
+
+5. **User Roles and Permissions**
+- Admin and User Roles: Users are assigned roles, such as admin or user, each with specific permissions.
+- Role-Based Access Control: Admins have additional privileges for managing users
+
+6. **Reponsive**
+- Only have reponsive in smartphone and PC/laptop screen
 
 # Installation
 1. Clone the repository:
@@ -64,6 +72,7 @@ npm run dev
 
 - Reactjs
 - Redux
+- Tailwindcss
 - Node.js
 - Express.js
 - MongoDB
