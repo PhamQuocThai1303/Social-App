@@ -55,7 +55,7 @@ function App() {
   useEffect(() => {
     if (firstLogin) {
       refresh()
-      const socket = io("http://localhost:3500");
+      const socket = io("https://social-app-api.vercel.app/");
       dispatch(setSocket({ socket }))
       return () => socket.close()
     }
