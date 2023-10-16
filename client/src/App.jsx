@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRefreshMutation } from './redux/actions/authAction'
 import { useGetPostQuery } from './redux/actions/postAction'
 import { useLazyGetNotifyQuery } from './redux/actions/notifyAction'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { setSocket } from './redux/reducers/socketReducer'
 import { io } from 'socket.io-client'
 
@@ -35,7 +35,6 @@ function App() {
   const { status } = useSelector((state) => state.status)
 
   const navigate = useNavigate()
-  const location = useLocation()
   const dispatch = useDispatch()
 
   const [refresh] = useRefreshMutation()
@@ -55,7 +54,7 @@ function App() {
   useEffect(() => {
     if (firstLogin) {
       refresh()
-      const socket = io("https://social-app-api.vercel.app/");
+      const socket = io('https://social-app-api.vercel.app');
       dispatch(setSocket({ socket }))
       return () => socket.close()
     }
