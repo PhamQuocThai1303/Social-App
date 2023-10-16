@@ -18,7 +18,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...credentials }
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                localStorage.setItem("firstLogin", true)
+            }
         }),
+
         logout: builder.mutation({
             query: () => ({
                 url: '/auth/logout',
@@ -27,6 +31,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     dispatch(logOut())
+                    localStorage.setItem("firstLogin", false)
                     setTimeout(() => {
                         dispatch(apiSlice.util.resetApiState())
                     }, 1000)
