@@ -58,7 +58,7 @@ function App() {
       dispatch(setSocket({ socket }))
       return () => socket.close()
     }
-  }, [])
+  }, [dispatch])
 
   return (
     <>
