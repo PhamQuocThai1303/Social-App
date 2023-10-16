@@ -16,7 +16,7 @@ const SocketClient = () => {
 
     //joinUser
     useEffect(() => {
-        socket.emit('joinUser', user)
+        if (user) socket.emit('joinUser', user)
     }, [socket, user])
 
     //likePost
