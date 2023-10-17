@@ -7,6 +7,7 @@ const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const corsOption = require('./config/corsOption')
+const allowedOrigins = require('./config/allowedOrigin')
 const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
 const socketServer = require('./socketServer')
@@ -17,7 +18,12 @@ const server = createServer(app);
 const { Server } = require('socket.io');
 
 //socket
-const io = new Server(server, { cors: { origin: 'https://t-connect-nine.vercel.app' } });
+const io = new Server(server, {
+    cors: {
+        // origin: 'https://t-connect-nine.vercel.app'
+        origin: allowedOrigins
+    }
+});
 io.on('connection', (socket) => {
     socketServer(socket)
 });
