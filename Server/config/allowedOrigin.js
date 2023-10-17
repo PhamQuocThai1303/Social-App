@@ -3,7 +3,8 @@ const allowedOrigins = [
     'https://t-connect-nine.vercel.app',
     'http://localhost:3500',
     'http://localhost:5173',
-    'https://social-app-mpgil7nb9-pham-quoc-thais-projects.vercel.app/'
+    'https://social-app-mpgil7nb9-pham-quoc-thais-projects.vercel.app',
+    'https://t-connect-a5veyqweo-pham-quoc-thais-projects.vercel.app'
 ]
 
 
