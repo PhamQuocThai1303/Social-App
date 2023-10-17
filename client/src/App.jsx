@@ -54,12 +54,11 @@ function App() {
   useEffect(() => {
     if (firstLogin) {
       refresh()
-      const socket = io('https://social-app-api.vercel.app', {
-        withCredentials: true,
-        extraHeaders: {
-          "my-custom-header": "abcd"
+      const socket = io('https://social-app-api.vercel.app',
+        {
+          transports: ['websocket', 'polling', 'flashsocket']
         }
-      });
+      );
       // const socket = io('http://localhost:3500');
       dispatch(setSocket({ socket }))
       return () => socket.close()
