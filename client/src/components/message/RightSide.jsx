@@ -27,16 +27,19 @@ const RightSide = () => {
     const [getMessage] = useGetMessageMutation()
 
     const { userId } = useParams()
+
     const [curUser, setCurUser] = useState([])
     const [text, setText] = useState("")
-
+    const [msgData, setMsgData] = useState([])
     const [images, setImages] = useState([])
     const [imgLoading, setImgLoading] = useState(false)
+    const [msgLoading, setMsgLoading] = useState(false)
 
     useEffect(() => {
         const newUser = users.find(user => user._id === userId)
         if (newUser) setCurUser(newUser)
-    }, [userId, users])
+        if (data) setMsgData(data)
+    }, [userId, users, data])
 
     const handleChangeImages = async (e) => {
         const files = [...e.target.files]
@@ -100,14 +103,18 @@ const RightSide = () => {
     //get message
     useEffect(() => {
         const getMessagesData = async () => {
-            if (data.every(item => item._id !== userId) && user._id) {
+            setMsgLoading(true)
+            if (user) {
                 await getMessage({ authId: user?._id, id: userId }).unwrap()
+                setMsgLoading(false)
                 if (refDisplay.current) {
                     refDisplay.current.scrollTo(0, refDisplay.current.scrollHeight)
                 }
             }
         }
         getMessagesData()
+
+
     }, [userId, user])
 
     // const handleDeleteConversation = () => {
@@ -133,9 +140,9 @@ const RightSide = () => {
             <div className="grow flex flex-col w-full h-full overflow-x-hidden justify-end space-y-4 p-3 overflow-y-auto ">
                 <div className="overflow-y-scroll max-h-[500px]" ref={refDisplay}
                     style={{ scrollBehavior: "smooth" }}>
-
-                    {
-                        data?.map((msg, index) => (
+                    {msgLoading
+                        ? <Loading />
+                        : msgData?.map((msg, index) => (
                             <div key={index}>
                                 {
                                     msg.sender !== user._id &&
@@ -154,6 +161,8 @@ const RightSide = () => {
                         ))
 
                     }
+
+
                     {
                         imgLoading &&
                         <div className="block bg-white">

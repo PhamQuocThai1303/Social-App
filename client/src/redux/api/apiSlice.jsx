@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import setCredentials from '../reducers/authReducer'
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'https://social-app-api.vercel.app',
+    // baseUrl: 'https://social-app-api.vercel.app',
+    baseUrl: 'http://localhost:3500',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token

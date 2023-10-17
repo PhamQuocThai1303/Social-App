@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Loading from "../alert/Loading"
 
 import PostCard from "../PostCard"
 
@@ -22,8 +23,9 @@ const Posts = ({ id, posts, auth }) => {
             <div className="sm:col-start-4 sm:col-span-6 ">
                 <div className="flex w-full sm:grid sm:grid-cols-12 flex-col items-center justify-center">
                     <div className="sm:col-start-2 sm:col-span-10 w-full">
-                        {
-                            userPosts?.map((post, index) => (
+                        {!userPosts
+                            ? <Loading />
+                            : userPosts?.map((post, index) => (
                                 <PostCard key={post._id} post={post} />
                             ))
                         }

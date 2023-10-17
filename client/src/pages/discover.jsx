@@ -8,12 +8,18 @@ const Discover = ({ userId }) => {
     const { posts } = useSelector((state) => state.discover)
     const { data } = useGetDiscoverPostQuery({ id: userId })
 
+    const [discoverPost, setDiscoverPost] = useState([]);
+
+    useEffect(() => {
+        if (posts) setDiscoverPost(posts)
+    }, [posts, data])
+
     return (
         <div className='my-10 mx-10'>
             {
-                !posts && !data && showRep.length <= 0
+                discoverPost.length == 0
                     ? <Loading />
-                    : <PostThumb posts={posts} />
+                    : <PostThumb posts={discoverPost} />
             }
 
         </div>

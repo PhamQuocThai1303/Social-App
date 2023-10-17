@@ -14,8 +14,13 @@ const LeftSide = () => {
 
     const [isSearch, setIsSearch] = useState(false)
     const [onlineUser, setOnlineUser] = useState([])
+    const [cvstUser, setCvstUser] = useState([]) //conversationUser
 
     const [getConversations] = useLazyGetConversationsQuery({ id: user._id })
+
+    useEffect(() => {
+        if (users) setCvstUser(users);
+    }, [user, users])
 
     useEffect(() => {
         if (user._id) {
@@ -39,11 +44,11 @@ const LeftSide = () => {
                 <AiOutlineForm className="text-2xl cursor-pointer" onClick={() => setIsSearch(true)} />
             </div>
             <div>
-                {!user
+                {!cvstUser
                     ? <Loading />
                     : <div>
                         {
-                            users.map((item) => (
+                            cvstUser.map((item) => (
                                 <Link key={item._id} className="relative" to={`/message/${item._id}`}>
                                     <UserCard user={item} msg={true} />
                                     {onlineUser.includes(item._id)

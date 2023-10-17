@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3500
-console.log(PORT);
+
 connectDB()
 
 

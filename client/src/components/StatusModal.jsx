@@ -88,14 +88,16 @@ const StatusModal = ({ post, setIsEdit }) => {
         e.preventDefault()
         try {
             let media;
-
+            setImgLoading(true)
             if (images.length > 0) {
+
                 media = await imageUpload(images)
             }
             const { message, newPost } = await creatPost({ userId: user?._id, content, images: media }).unwrap()
-            dispatch(setStatus(false))
+            setImgLoading(false)
             setContent('')
             setImages([])
+            dispatch(setStatus(false))
             if (tracks) tracks.stop
 
             // Notify 
@@ -139,20 +141,20 @@ const StatusModal = ({ post, setIsEdit }) => {
             if (post?.content === content && imgNewUrl?.length === 0 && imgOldUrl?.length === post?.images?.length
             ) dispatch(setStatus(false));
 
-
+            setImgLoading(true)
             if (imgNewUrl.length > 0) {
-                setImgLoading(true)
                 media = await imageUpload(imgNewUrl)
-                setImgLoading(false)
             }
             //cap nhat image moi neu co
             if (media) {
                 const { message } = await updatePost({ postId: post._id, content, images: [...imgOldUrl, ...media] }).unwrap()
+                setImgLoading(false)
                 msg = message
             }
             else {
 
                 const { message } = await updatePost({ postId: post._id, content, images: [...imgOldUrl] }).unwrap()
+                setImgLoading(false)
                 msg = message
             }
             setContent('')
@@ -179,7 +181,6 @@ const StatusModal = ({ post, setIsEdit }) => {
         <div className="max-w-2xl mx-auto">
             <div id="default-modal" data-modal-show="true" aria-hidden="true" className="bg-gray-200/50 overflow-x-hidden overflow-y-auto fixed w-full h-full sm:h-full top-0 left-0 right-0 sm:inset-0 z-50 sm:flex sm:justify-center sm:items-center">
                 <div className="relative flex justify-center top-16 sm:top-0 w-full max-w-xl px-4">
-
                     {/* Modal content */}
                     <div className="bg-white rounded-lg shadow relative w-full dark:bg-gray-700">
                         {/* Modal header */}
@@ -197,83 +198,84 @@ const StatusModal = ({ post, setIsEdit }) => {
                         </div>
                         {/* Modal body */}
                         <div className='mx-2 my-4 max-[500px]'>
-
-                            <form>
-                                {/* show image */}
-                                <div className="flex overflow-y-scroll w-full max-w[100px] gap-2 items-center">
+                            {imgLoading
+                                ? <Loading />
+                                : <form>
+                                    {/* show image */}
+                                    <div className="flex overflow-y-scroll w-full max-w[100px] gap-2 items-center">
+                                        {
+                                            images.map((image, index) => (
+                                                <div key={index} className="flex flex-col items-center">
+                                                    {image &&
+                                                        <img src={image.camera ? image.camera : image.url ? image.url : URL.createObjectURL(image)}
+                                                            alt="avatar"
+                                                            className='sm:max-w-[200px] sm:max-h-[200px] max-w-[100px] max-h-[100px] object-contain border-2 '
+                                                        />
+                                                    }
+                                                    {image &&
+                                                        <button className="p-1" onClick={(e) => deleteImg(index, e)}>
+                                                            <TfiClose />
+                                                        </button>
+                                                    }
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                    {/* Camera */}
                                     {
-                                        images.map((image, index) => (
-                                            <div key={index} className="flex flex-col items-center">
-                                                {image &&
-                                                    <img src={image.camera ? image.camera : image.url ? image.url : URL.createObjectURL(image)}
-                                                        alt="avatar"
-                                                        className='sm:max-w-[200px] sm:max-h-[200px] max-w-[100px] max-h-[100px] object-contain border-2 '
-                                                    />
-                                                }
-                                                {image &&
-                                                    <button className="p-1" onClick={(e) => deleteImg(index, e)}>
-                                                        <TfiClose />
-                                                    </button>
-                                                }
+                                        stream &&
+                                        <div className="flex flex-col sm:flex-row justify-center items-center">
+                                            <video className="w-[400px] rounded" autoPlay muted ref={videoRef} />
+                                            <div className="flex sm:flex-col items-center sm:ml-4 mt-4 gap-10">
+                                                <TfiClose className="text-2xl" onClick={handleStopStream} />
+
+                                                <canvas className="h-[50px] hidden" ref={refCanvas} />
+                                                <TfiCamera className="text-2xl" onClick={handleCapture} />
                                             </div>
-                                        ))
+
+                                        </div>
                                     }
-                                </div>
-                                {/* Camera */}
-                                {
-                                    stream &&
-                                    <div className="flex flex-col sm:flex-row justify-center items-center">
-                                        <video className="w-[400px] rounded" autoPlay muted ref={videoRef} />
-                                        <div className="flex sm:flex-col items-center sm:ml-4 mt-4 gap-10">
-                                            <TfiClose className="text-2xl" onClick={handleStopStream} />
 
-                                            <canvas className="h-[50px] hidden" ref={refCanvas} />
-                                            <TfiCamera className="text-2xl" onClick={handleCapture} />
+                                    <small className="ml-2">
+                                        {content.length}/200
+                                    </small>
+
+                                    {/* content */}
+                                    <div className="w-full border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                                        <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
+                                            <label htmlFor="comment" className="sr-only">Your text</label>
+                                            <textarea id="comment" rows="4" className="w-full h-[200px] max-h-[250px] px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="What are you thinking?" value={content} onChange={(e) => setContent(e.target.value)}>
+
+                                            </textarea>
                                         </div>
+                                        <div className="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
+                                            <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+                                                onClick={(e) => {
+                                                    setIsEdit
+                                                        ? handleUpdate(e)
+                                                        : handleSubmit(e)
+                                                }}>
+                                                {setIsEdit ? 'Update' : 'Post'}
+                                            </button>
+                                            <div className="flex pl-0 space-x-1 sm:pl-2">
+                                                <Icons content={content} setContent={setContent} />
 
-                                    </div>
-                                }
+                                                <label type="button" className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl " onClick={handleStream}>
+                                                    <TfiCamera />
+                                                    <span className="sr-only">Upload camera</span>
+                                                </label>
 
-                                <small className="ml-2">
-                                    {content.length}/200
-                                </small>
-
-                                {/* content */}
-                                <div className="w-full border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-                                    <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
-                                        <label htmlFor="comment" className="sr-only">Your text</label>
-                                        <textarea id="comment" rows="4" className="w-full h-[200px] max-h-[250px] px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="What are you thinking?" value={content} onChange={(e) => setContent(e.target.value)}>
-
-                                        </textarea>
-                                    </div>
-                                    <div className="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
-                                        <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
-                                            onClick={(e) => {
-                                                setIsEdit
-                                                    ? handleUpdate(e)
-                                                    : handleSubmit(e)
-                                            }}>
-                                            {setIsEdit ? 'Update' : 'Post'}
-                                        </button>
-                                        <div className="flex pl-0 space-x-1 sm:pl-2">
-                                            <Icons content={content} setContent={setContent} />
-
-                                            <label type="button" className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl " onClick={handleStream}>
-                                                <TfiCamera />
-                                                <span className="sr-only">Upload camera</span>
-                                            </label>
-
-                                            <label className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl">
-                                                <TfiGallery />
-                                                <span className="sr-only">Upload image</span>
-                                                <input type='file' name='file' className="hidden" multiple accept="image/*"
-                                                    onChange={handleChangeImages} />
-                                            </label>
+                                                <label className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-300 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 text-2xl">
+                                                    <TfiGallery />
+                                                    <span className="sr-only">Upload image</span>
+                                                    <input type='file' name='file' className="hidden" multiple accept="image/*"
+                                                        onChange={handleChangeImages} />
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-
+                                </form>
+                            }
 
                         </div>
                     </div>
