@@ -21,7 +21,9 @@ const { Server } = require('socket.io');
 const io = new Server(server, {
     cors: {
         // origin: 'https://t-connect-nine.vercel.app'
-        origin: allowedOrigins
+        origin: allowedOrigins,
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
 });
 io.on('connection', (socket) => {
