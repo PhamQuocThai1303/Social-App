@@ -138,7 +138,7 @@ const SocketClient = () => {
 
     useEffect(() => {
         socket.on('checkUserOnlineToClient', id => {
-            console.log(id);
+            // console.log(id);
             if (!online.includes(id)) {
                 dispatch(setOnline({ onlineUser: id }))
             }
