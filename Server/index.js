@@ -28,14 +28,6 @@ io.on('connection', (socket) => {
     socketServer(socket)
 });
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PATCH");
-    next();
-});
-
 const PORT = process.env.PORT || 3500
 
 connectDB()
